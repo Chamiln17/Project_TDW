@@ -8,15 +8,30 @@ require_once "models/HomeModel.php";
 
 class HomeController
 {
-    private $data;
-    private $view;
+    private  $home;
+
     public function __construct()
     {
-        $this->data = new HomeModel();
-        $this->view = new \HomeView();
+        if ($this->home == null)
+        $this->home = new HomeModel();
+
+    }
+    public function getPartners(): array
+    {
+        return $this->home->get_partners();
+
+    }
+    public function getTotalPartners()
+    {
+        return $this->home->getTotalPartners();
+    }
+    public function getNews()
+    {
+        return $this->home->get_news();
     }
     public function  display()
     {
-        $this->view->afficherHome();
+        $view = new \HomeView();
+        $view->afficherHome();
     }
 }
