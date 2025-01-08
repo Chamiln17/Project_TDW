@@ -135,7 +135,7 @@ class HomeView
                                         <?php foreach ($partnerGroup as $partner): ?>
                                             <div class="flex flex-col items-center justify-between">
                                                 <div class="h-16 w-16 bg-gray-200 rounded-full flex items-center justify-center">
-                                                    <img src="/uploads/partners/<?= htmlspecialchars($partner['partnerLogo']) ?>" alt="<?= htmlspecialchars($partner['partnerName']) ?>" class="h-12 object-contain">
+                                                    <img src="<?= htmlspecialchars($partner['partnerLogo']) ?>" alt="<?= htmlspecialchars($partner['partnerName']) ?>" class="h-12 object-contain">
                                                 </div>
                                                 <p class="text-gray-500 text-sm mt-2 text-center"><?= htmlspecialchars($partner['partnerName']) ?></p>
                                             </div>
@@ -155,9 +155,8 @@ class HomeView
             document.addEventListener('DOMContentLoaded', () => {
                 // Fetch partner data passed from PHP
                 const partners = <?= json_encode($partners) ?>;
-
+                console.log(partners['logo']);
                 // Debug: Ensure the data is loaded
-                console.log(partners);
 
                 const itemsPerPage = <?= $itemsPerPage ?>;
                 const totalPartners = partners.length;
@@ -179,14 +178,13 @@ class HomeView
                     const currentPartners = partners.slice(start, end);
 
                     // Debug: Check the slice being rendered
-                    console.log(`Rendering page ${page}:`, currentPartners);
 
                     // Generate HTML for table rows
                     partnersTable.innerHTML = currentPartners.map(partner => `
                 <tr class="table-row-fade">
                 <td class="px-8 py-6">
                     <div class="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center overflow-hidden">
-                        <img src="/uploads/partners/${partner.partnerLogo}" alt="Logo" class="w-full h-full object-cover"/>
+                        <img src="${partner.partnerLogo}" alt="Logo" class="w-full h-full object-cover"/>
                     </div>
                 </td>
                 <td class="px-8 py-6">

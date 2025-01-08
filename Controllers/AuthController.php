@@ -17,11 +17,7 @@ class AuthController
             $this->data = new UserModel();
 
     }
-    function fetch_event()
-    {
-        $this->data->get_data();
 
-    }
     public function  display_Login()
     {
         $this->view = new \LoginView();
