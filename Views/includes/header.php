@@ -3,12 +3,34 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 $userRole = $_SESSION['user_role'] ?? 'public';
+
+// Get current page URL
+$current_page = $_SERVER['REQUEST_URI'];
+// Remove query strings
+$current_page = strtok($current_page, '?');
+// Remove trailing slash if exists
+$current_page = rtrim($current_page, '/');
+if ($current_page === '/Project_TDW' || $current_page === '/Project_TDW/') {
+    $current_page = '/Project_TDW';
+}
 ?>
     <!DOCTYPE html>
     <html>
     <head>
         <title>Header</title>
         <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            'nav-gray': '#2D3339',
+                            'brand-red': '#FF0000',
+                        }
+                    }
+                }
+            }
+        </script>
         <link rel="stylesheet" href="/assets/">
         <style>
             .slide {
@@ -95,11 +117,32 @@ $userRole = $_SESSION['user_role'] ?? 'public';
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex space-x-8">
-                    <a href="#" class="inline-flex items-center px-1 pt-1 text-gray-900">A Propos</a>
-                    <a href="#" class="inline-flex items-center px-1 pt-1 text-gray-500 hover:text-gray-900">Evenements</a>
-                    <a href="#" class="inline-flex items-center px-1 pt-1 text-gray-500 hover:text-gray-900">News</a>
-                    <a href="#" class="inline-flex items-center px-1 pt-1 text-gray-500 hover:text-gray-900">Partenaires</a>
-                    <a href="#" class="inline-flex items-center px-1 pt-1 text-gray-500 hover:text-gray-900">Contactez nous</a>
+                    <?php
+                    // Define navigation items with their paths and labels
+                    $nav_items = [
+                        '/Project_TDW' => 'A Propos',
+                        '/Project_TDW/evenements' => 'Evenements',
+                        '/Project_TDW/news' => 'News',
+                        '/Project_TDW/catalogue' => 'Partenaires',
+                        '/Project_TDW/contact' => 'Contactez nous'
+                    ];
+
+                    foreach ($nav_items as $path => $label) {
+                        // Updated active state check
+                        $is_active = $current_page === $path;
+
+                        // For non-home pages, also check if current page starts with path
+                        if (!$is_active && $path !== '/Project_TDW') {
+                            $is_active = strpos($current_page, $path) === 0;
+                        }
+
+                        $class = $is_active
+                            ? "inline-flex items-center px-1 pt-1 border-b-2 border-red-500 text-gray-900"
+                            : "inline-flex items-center px-1 pt-1 text-gray-500 hover:text-gray-900 hover:border-b-2 hover:border-gray-300";
+
+                        echo "<a href=\"$path\" class=\"$class\">$label</a>";
+                    }
+                    ?>
                 </div>
                 <div class="flex items-center">
                     <button class="bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Login</button>
