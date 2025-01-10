@@ -17,7 +17,6 @@ private $password = ''; // Default XAMPP password is empty
 
             // Set the PDO error mode to exception
             $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
         } catch (PDOException $e) {
             echo "Connection failed: " . $e->getMessage();
         }
@@ -28,11 +27,17 @@ private $password = ''; // Default XAMPP password is empty
     {
         $this->connection = null;
     }
-    public function query($query)
+    public function query($query, $params = [])
     {
         $stmt = $this->connection->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->execute($params);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function execute($query, $params = [])
+    {
+        $stmt = $this->connection->prepare($query);
+        return $stmt->execute($params);
     }
 
 

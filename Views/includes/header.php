@@ -145,8 +145,8 @@ if ($current_page === '/Project_TDW' || $current_page === '/Project_TDW/') {
                     ?>
                 </div>
                 <div class="flex items-center">
-                    <button class="bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Login</button>
-                    <button class="ml-4 bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700">Rejoignez Nous</button>
+                    <a href="/Project_TDW/login" class="bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Login</a>
+                    <a href="/Project_TDW/register" class="bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700">Rejoignez Nous</a>
                 </div>
             </div>
         </div>
