@@ -12,6 +12,86 @@ if ($current_page === '/Project_TDW' || $current_page === '/Project_TDW/') {
     $current_page = '/Project_TDW';
 }
 
+function afficherNavbar($userRole) {
+    // Define navigation items for each user role
+    $nav_items = [
+        'admin' => [
+            '/Project_TDW' => 'A Propos',
+            '/Project_TDW/evenements' => 'Evenements',
+            '/Project_TDW/news' => 'News',
+            '/Project_TDW/catalogue' => 'Partenaires',
+            '/Project_TDW/contact' => 'Contactez nous',
+            '/admin/dashboard' => 'Dashboard',
+            '/admin/members' => 'Members'
+        ],
+        'member' => [
+            '/Project_TDW' => 'A Propos',
+            '/Project_TDW/evenements' => 'Evenements',
+            '/Project_TDW/news' => 'News',
+            '/Project_TDW/catalogue' => 'Partenaires',
+            '/Project_TDW/contact' => 'Contactez nous'
+        ],
+        'public' => [
+            '/Project_TDW' => 'A Propos',
+            '/Project_TDW/evenements' => 'Evenements',
+            '/Project_TDW/news' => 'News',
+            '/Project_TDW/catalogue' => 'Partenaires',
+            '/Project_TDW/contact' => 'Contactez nous'
+        ]
+    ];
+
+    // Get current page URL
+    $current_page = $_SERVER['REQUEST_URI'];
+    $current_page = strtok($current_page, '?');
+    $current_page = rtrim($current_page, '/');
+
+    if ($current_page === '/Project_TDW' || $current_page === '/Project_TDW/') {
+        $current_page = '/Project_TDW';
+    }
+
+    // Select appropriate navigation items based on user role
+    $current_nav_items = $nav_items[$userRole] ?? $nav_items['public'];
+
+    // Generate the navbar with consistent styling
+    echo '<nav class="bg-white shadow">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16">
+                    <div class="flex space-x-8">';
+
+    foreach ($current_nav_items as $path => $label) {
+        $is_active = $current_page === $path;
+
+        if (!$is_active && $path !== '/Project_TDW') {
+            $is_active = strpos($current_page, $path) === 0;
+        }
+
+        $class = $is_active
+            ? "inline-flex items-center px-1 pt-1 border-b-2 border-red-500 text-gray-900"
+            : "inline-flex items-center px-1 pt-1 text-gray-500 hover:text-gray-900 hover:border-b-2 hover:border-gray-300";
+
+        echo '<a href="' . $path . '" class="' . $class . '">' . $label . '</a>';
+    }
+
+    echo '</div>
+          <div class="flex items-center">';
+
+    // Different buttons based on user role
+    if ($userRole === 'member') {
+        echo '<a href="/member/profile" class="bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">My Profile</a>
+              <a href="/logout" class="bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700">Logout</a>';
+    } elseif ($userRole === 'admin') {
+        echo '<a href="/admin/dashboard" class="bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Dashboard</a>
+              <a href="/logout" class="bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700">Logout</a>';
+    } else {
+        echo '<a href="/Project_TDW/login" class="bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Login</a>
+              <a href="/Project_TDW/register" class="bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700">Rejoignez Nous</a>';
+    }
+
+    echo '</div>
+        </div>
+      </div>
+    </nav>';
+}
 
 ?>
     <!DOCTYPE html>
@@ -83,72 +163,4 @@ if ($current_page === '/Project_TDW' || $current_page === '/Project_TDW/') {
             </div>
         </div>
     </header>
-<?php if ($userRole == 'admin') { ?>
-    <nav class="bg-gray-800 p-4">
-        <ul class="flex list-none">
-            <li class="mr-4">
-                <a href="/admin/dashboard" class="text-gray-100 hover:text-white font-bold">Admin Dashboard</a>
-            </li>
-            <li class="mr-4">
-                <a href="/admin/settings" class="text-gray-100 hover:text-white font-bold">Settings</a>
-            </li>
-            <li>
-                <a href="/logout" class="text-gray-100 hover:text-white font-bold">Logout</a>
-            </li>
-        </ul>
-    </nav>
-<?php } elseif ($userRole == 'member') { ?>
-    <nav class="bg-gray-800 p-4">
-        <ul class="flex list-none">
-            <li class="mr-4">
-                <a href="/member/profile" class="text-gray-100 hover:text-white font-bold">Member Profile</a>
-            </li>
-            <li class="mr-4">
-                <a href="/member/settings" class="text-gray-100 hover:text-white font-bold">Settings</a>
-            </li>
-            <li>
-                <a href="/logout" class="text-gray-100 hover:text-white font-bold">Logout</a>
-            </li>
-        </ul>
-    </nav>
-<?php } else { ?>
-    <!-- Navigation Menu -->
-    <nav class="bg-white shadow">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex space-x-8">
-                    <?php
-                    // Define navigation items with their paths and labels
-                    $nav_items = [
-                        '/Project_TDW' => 'A Propos',
-                        '/Project_TDW/evenements' => 'Evenements',
-                        '/Project_TDW/news' => 'News',
-                        '/Project_TDW/catalogue' => 'Partenaires',
-                        '/Project_TDW/contact' => 'Contactez nous'
-                    ];
-
-                    foreach ($nav_items as $path => $label) {
-                        // Updated active state check
-                        $is_active = $current_page === $path;
-
-                        // For non-home pages, also check if current page starts with path
-                        if (!$is_active && $path !== '/Project_TDW') {
-                            $is_active = strpos($current_page, $path) === 0;
-                        }
-
-                        $class = $is_active
-                            ? "inline-flex items-center px-1 pt-1 border-b-2 border-red-500 text-gray-900"
-                            : "inline-flex items-center px-1 pt-1 text-gray-500 hover:text-gray-900 hover:border-b-2 hover:border-gray-300";
-
-                        echo "<a href=\"$path\" class=\"$class\">$label</a>";
-                    }
-                    ?>
-                </div>
-                <div class="flex items-center">
-                    <a href="/Project_TDW/login" class="bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Login</a>
-                    <a href="/Project_TDW/register" class="bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700">Rejoignez Nous</a>
-                </div>
-            </div>
-        </div>
-    </nav>
-<?php } ?>
+<?php afficherNavbar($userRole); ?>

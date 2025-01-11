@@ -11,6 +11,11 @@ class RegisterView
             $this->controller = new AuthController();
         }
     }
+    public function getMembershipsTypes($memberships)
+    {
+
+
+    }
 
 
     public function afficherRegister()
@@ -22,73 +27,164 @@ class RegisterView
             session_start();
         }
         ?>
-        <div class="container mx-auto mt-5 p-4">
-            <div class="flex justify-center">
-                <div class="w-full max-w-md">
-                    <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-                        <div class="bg-gray-50 px-6 py-4 border-b border-gray-100">
-                            <h2 class="text-xl font-semibold text-gray-800">Register</h2>
+
+        <div class="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+            <div class="max-w-3xl mx-auto">
+                <div class="text-center mb-8">
+                    <h2 class="text-4xl font-bold text-gray-900 mb-2">Devenir Membre</h2>
+                    <p class="text-lg text-gray-600">Rejoignez notre communauté Coeur espoir</p>
+                </div>
+
+                <form action="/Project_TDW/register" method="POST" enctype="multipart/form-data" class="bg-white shadow-lg rounded-lg p-8 space-y-6">
+                    <!--  -->
+                    <?php
+                    if (isset($_SESSION['register_error'])) {
+                        echo "<div class='bg-red-50 text-red-600 px-4 py-3 rounded-md' role='alert'>" .
+                            htmlspecialchars($_SESSION['register_error']) .
+                            "</div>";
+                        unset($_SESSION['register_error']);
+                    }
+
+                    ?>
+                    <!-- Informations Personnelles -->
+                    <div class="space-y-4">
+                        <h3 class="text-xl font-semibold text-gray-900">Informations Personnelles</h3>
+
+                        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                            <div class="space-y-2">
+                                <label for="prenom" class="block text-sm font-medium text-gray-700">Prénom</label>
+                                <input type="text" id="prenom" name="prenom" required
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500">
+                            </div>
+                            <div class="space-y-2">
+                                <label for="nom" class="block text-sm font-medium text-gray-700">Nom</label>
+                                <input type="text" id="nom" name="nom" required
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500">
+                            </div>
                         </div>
-                        <div class="p-6">
-                            <?php
-                            if (isset($_SESSION['register_error'])) {
-                                echo "<div class='bg-red-50 text-red-600 px-4 py-3 rounded-md' role='alert'>" .
-                                    htmlspecialchars($_SESSION['register_error']) .
-                                    "</div>";
-                                unset($_SESSION['register_error']);
-                            }
-                            ?>
-                            <form action="/Project_TDW/register" method="POST" class="space-y-6">
-                                <div class="space-y-2">
-                                    <label for="input" class="block text-sm font-medium text-gray-700">
-                                        Username
-                                    </label>
-                                    <label for="username"></label><input
-                                        type="text"
-                                        class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                                        id="username"
-                                        name="username"
-                                        required
-                                    />
-                                </div>
-                                <div class="space-y-2">
-                                    <label for="input" class="block text-sm font-medium text-gray-700">
-                                        Email
-                                    </label>
-                                    <label for="email"></label><input
-                                        type="text"
-                                        class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                                        id="email"
-                                        name="email"
-                                        required
-                                    />
-                                </div>
 
-                                <div class="space-y-2">
-                                    <label for="password" class="block text-sm font-medium text-gray-700">
-                                        Password
-                                    </label>
-                                    <input
-                                        type="password"
-                                        class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                                        id="password"
-                                        name="password"
-                                        required
-                                    />
-                                </div>
+                        <div class="space-y-2">
+                            <label for="date_naissance" class="block text-sm font-medium text-gray-700">Date de naissance</label>
+                            <input type="date" id="date_naissance" name="date_naissance" required
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500">
+                        </div>
 
-                                <button
-                                    type="submit"
-                                    class="w-full bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
-                                >
-                                    Register
-                                </button>
-                            </form>
+                        <div class="space-y-2">
+                            <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                            <input type="email" id="email" name="email" required
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label for="telephone" class="block text-sm font-medium text-gray-700">Téléphone</label>
+                            <input type="tel" id="telephone" name="telephone" pattern="[0-9]{10}" required
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label for="adresse" class="block text-sm font-medium text-gray-700">Adresse</label>
+                            <textarea id="adresse" name="adresse" rows="3" required
+                                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"></textarea>
                         </div>
                     </div>
-                </div>
+
+                    <!-- Documents Requis -->
+                    <div class="space-y-4">
+                        <h3 class="text-xl font-semibold text-gray-900">Documents Requis</h3>
+
+                        <div class="space-y-2">
+                            <label for="photo" class="block text-sm font-medium text-gray-700">Photo d'identité</label>
+                            <input type="file" id="photo" name="photo" accept=".jpg,.png,.pdf" required
+                                   class="w-full file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100">
+                            <p class="text-sm text-gray-500">Format: JPG, PNG, PDF (max 5MB)</p>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label for="piece_identite" class="block text-sm font-medium text-gray-700">Pièce d'identité</label>
+                            <input type="file" id="piece_identite" name="piece_identite" accept=".jpg,.png,.pdf" required
+                                   class="w-full file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label for="recu_paiement" class="block text-sm font-medium text-gray-700">Reçu de paiement</label>
+                            <input type="file" id="recu_paiement" name="recu_paiement" accept=".pdf" required
+                                   class="w-full file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100">
+                            <p class="text-sm text-gray-500">Format: PDF uniquement (max 10MB)</p>
+                        </div>
+                    </div>
+
+                    <!-- Type d'adhésion -->
+                    <div class="space-y-4">
+                        <h3 class="text-xl font-semibold text-gray-900">Type d'adhésion</h3>
+
+                        <div class="space-y-2">
+                            <label for="type_adhesion" class="block text-sm font-medium text-gray-700">Choisissez votre type d'adhésion</label>
+                            <select id="type_adhesion" name="type_adhesion" required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                                    onchange="updateMembershipDetails(this.value)">
+                                <option value="">Sélectionnez un type</option>
+                                <option value="classique">Classique</option>
+                                <option value="jeunes">Jeunes</option>
+                                <option value="premium">Premium</option>
+                            </select>
+                        </div>
+
+                        <div id="membership_details" class="hidden p-4 bg-gray-50 rounded-lg">
+                            <p id="membership_price" class="font-semibold text-gray-900"></p>
+                            <p id="membership_benefits" class="text-gray-600"></p>
+                        </div>
+                    </div>
+
+                    <!-- Terms and Conditions -->
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-2">
+                            <input type="checkbox" id="terms" name="terms" required
+                                   class="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded">
+                            <label for="terms" class="text-sm text-gray-700">
+                                J'accepte les termes et conditions de l'association
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit"
+                            class="w-full bg-red-600 hover:bg-red-700 text-white py-3 px-4 rounded-full font-semibold transition duration-150">
+                        Devenir membre
+                    </button>
+                </form>
             </div>
         </div>
+
+        <script>
+            function updateMembershipDetails(type) {
+                const details = {
+                    'classique': {
+                        price: '50€',
+                        benefits: 'Accès aux événements standards'
+                    },
+                    'jeunes': {
+                        price: '30€',
+                        benefits: 'Tarif réduit pour les moins de 25 ans'
+                    },
+                    'premium': {
+                        price: '100€',
+                        benefits: 'Accès VIP à tous les événements'
+                    }
+                };
+
+                const detailsDiv = document.getElementById('membership_details');
+                const priceElement = document.getElementById('membership_price');
+                const benefitsElement = document.getElementById('membership_benefits');
+
+                if (type && details[type]) {
+                    priceElement.textContent = `Prix: ${details[type].price}`;
+                    benefitsElement.textContent = details[type].benefits;
+                    detailsDiv.classList.remove('hidden');
+                } else {
+                    detailsDiv.classList.add('hidden');
+                }
+            }
+        </script>
         <?php
     }
 }

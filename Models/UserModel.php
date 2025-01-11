@@ -1,16 +1,18 @@
 <?php
 
 namespace Models;
+use Database;
+
 require_once "core/Database.php";
 
 
 class UserModel
 {
-    private \Database $db;
+    private Database $db;
 
     public function __construct()
     {
-        $this->db = new \Database();
+        $this->db = new Database();
     }
     public function register($username, $email, $password, $role = 'member')
     {
@@ -149,5 +151,10 @@ class UserModel
         $this->db->disconnect();
 
         return !empty($user) ? $user[0] : false; // Return the user data if found, otherwise false
+    }
+    public function getMemberships()
+    {
+       $this->db->connect();
+       return $this->db->query("SELECT type_name FROM membership_types");
     }
 }
