@@ -13,7 +13,7 @@ require_once "models/UserModel.php";
 class AuthController
 {
     private UserModel $data;
-    private $view;
+    private  $view;
 
     public function __construct()
     {
@@ -33,8 +33,9 @@ class AuthController
     }
 
     public function login()
-    {   if (session_status() == PHP_SESSION_NONE) {
-        session_start();
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
         }
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header("Location: login");
@@ -45,6 +46,23 @@ class AuthController
         $password = $_POST['password'];
         $user = $this->data->login($input, $password);
         if ($user) {
+            // Fetch member data
+            $member = $this->data->getMemberByUserId($user['user_id']);
+            if (!$member) {
+                $_SESSION['login_error'] = "Member data not found.";
+                header("Location: login");
+                exit();
+            }
+            if ($member['is_blocked']) {
+                $_SESSION['login_error'] = "Your account is blocked.";
+                header("Location: login");
+                exit();
+            }
+            if (!$member['is_validated']) {
+                $_SESSION['login_error'] = "Your account is pending validation.";
+                header("Location: login");
+                exit();
+            }
             // Set session variables
             $_SESSION['user_id'] = $user['user_id'];
             $_SESSION['username'] = $user['username'];
@@ -152,4 +170,24 @@ class AuthController
         header("Location: /Project_TDW/");
         exit();
     }
+
+    public function validateUser($memberId)
+    {
+        if ($this->data->validateUser($memberId)) {
+            // Redirect or return success
+        } else {
+            // Handle error
+        }
+    }
+
+    public function blockUser($memberId)
+    {
+        if ($this->data->blockUser($memberId)) {
+            // Redirect or return success
+        } else {
+            // Handle error
+        }
+    }
+
+
 }

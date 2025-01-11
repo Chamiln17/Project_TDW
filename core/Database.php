@@ -44,6 +44,26 @@ private $password = ''; // Default XAMPP password is empty
     {
         return $this->connection->lastInsertId();
     }
+    public function beginTransaction()
+    {
+        if ($this->connection) {
+            $this->connection->beginTransaction();
+        }
+    }
+
+    public function commit()
+    {
+        if ($this->connection) {
+            $this->connection->commit();
+        }
+    }
+
+    public function rollBack()
+    {
+        if ($this->connection) {
+            $this->connection->rollBack();
+        }
+    }
 
 
 }
