@@ -78,11 +78,13 @@ function afficherNavbar($userRole) {
     // Different buttons based on user role
     if ($userRole === 'member') {
         echo '<a href="/member/profile" class="bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">My Profile</a>
-              <a href="/logout" class="bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700">Logout</a>';
-    } elseif ($userRole === 'admin') {
+<form action="/Project_TDW/logout" method="POST">
+                  <button type="submit" class="bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700">Logout</button>
+              </form>';    } elseif ($userRole === 'admin') {
         echo '<a href="/admin/dashboard" class="bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Dashboard</a>
-              <a href="/logout" class="bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700">Logout</a>';
-    } else {
+<form action="/Project_TDW/logout" method="POST">
+                  <button type="submit" class="bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700">Logout</button>
+              </form>';    } else {
         echo '<a href="/Project_TDW/login" class="bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Login</a>
               <a href="/Project_TDW/register" class="bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700">Rejoignez Nous</a>';
     }

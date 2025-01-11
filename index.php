@@ -14,6 +14,7 @@ $app->router->get('/register',[\Controllers\AuthController::class ,'display_Regi
 $app->router->get('/catalogue',[\Controllers\CatalogueController::class ,'display'] );
 $app->router->post('/login',[\Controllers\AuthController::class ,'login'] );
 $app->router->post('/register',[\Controllers\AuthController::class ,'register'] );
+$app->router->post('/logout',[\Controllers\AuthController::class ,'logout'] );
 $app->router->get("/about", function() {
     echo "About";
 });
