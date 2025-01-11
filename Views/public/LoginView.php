@@ -32,7 +32,6 @@ class LoginView
                                 echo "<div class='bg-red-50 text-red-600 px-4 py-3 rounded-md' role='alert'>" .
                                     htmlspecialchars($_SESSION['login_error']) .
                                     "</div>";
-                                var_dump($_SESSION['login_error']);
                                 unset($_SESSION['login_error']);
                             }
                             ?>

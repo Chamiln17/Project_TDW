@@ -11,6 +11,8 @@ class HomeView
 
 
     public function afficherHome() {
+
+
         // Determine the current page
         $page = 1;
         $itemsPerPage = 10;

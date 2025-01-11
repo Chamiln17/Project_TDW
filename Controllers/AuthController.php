@@ -59,7 +59,7 @@ class AuthController
                     header("Location: partner_dashboard.php");
                     break;
                 default:
-                    header("Location: dashboard");
+                    header("Location: /Project_TDW/");
                     break;
             }
         } else {

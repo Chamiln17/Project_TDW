@@ -2,9 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-$userRole = $_SESSION['user_role'] ?? 'public';
-
-// Get current page URL
+$userRole = $_SESSION['role'] ?? 'public';
 $current_page = $_SERVER['REQUEST_URI'];
 // Remove query strings
 $current_page = strtok($current_page, '?');
@@ -13,9 +11,11 @@ $current_page = rtrim($current_page, '/');
 if ($current_page === '/Project_TDW' || $current_page === '/Project_TDW/') {
     $current_page = '/Project_TDW';
 }
+
+
 ?>
     <!DOCTYPE html>
-    <html>
+    <html lang="en">
     <head>
         <title>Header</title>
         <script src="https://cdn.tailwindcss.com"></script>
