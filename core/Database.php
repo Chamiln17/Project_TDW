@@ -40,6 +40,11 @@ private $password = ''; // Default XAMPP password is empty
         return $stmt->execute($params);
     }
 
+    public function lastInsertId()
+    {
+        return $this->connection->lastInsertId();
+    }
+
 
 }
 

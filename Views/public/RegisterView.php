@@ -76,6 +76,18 @@ class RegisterView
                         </div>
 
                         <div class="space-y-2">
+                            <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+                            <input type="text" id="username" name="username" required
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                            <input type="password" id="password" name="password" required
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500">
+                        </div>
+
+                        <div class="space-y-2">
                             <label for="telephone" class="block text-sm font-medium text-gray-700">Téléphone</label>
                             <input type="tel" id="telephone" name="telephone" pattern="[0-9]{10}" required
                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500">
@@ -104,15 +116,6 @@ class RegisterView
                             <input type="file" id="piece_identite" name="piece_identite" accept=".jpg,.png,.pdf" required
                                    class="w-full file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100">
                         </div>
-
-                        <div class="space-y-2">
-                            <label for="recu_paiement" class="block text-sm font-medium text-gray-700">Reçu de paiement</label>
-                            <input type="file" id="recu_paiement" name="recu_paiement" accept=".pdf" required
-                                   class="w-full file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100">
-                            <p class="text-sm text-gray-500">Format: PDF uniquement (max 10MB)</p>
-                        </div>
-                    </div>
-
                     <!-- Type d'adhésion -->
                     <div class="space-y-4">
                         <h3 class="text-xl font-semibold text-gray-900">Type d'adhésion</h3>
@@ -134,6 +137,15 @@ class RegisterView
                             <p id="membership_benefits" class="text-gray-600"></p>
                         </div>
                     </div>
+                        <div class="space-y-2">
+                            <label for="recu_paiement" class="block text-sm font-medium text-gray-700">Reçu de paiement</label>
+                            <input type="file" id="recu_paiement" name="recu_paiement" accept=".pdf" required
+                                   class="w-full file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100">
+                            <p class="text-sm text-gray-500">Format: PDF uniquement (max 10MB)</p>
+                        </div>
+                    </div>
+
+
 
                     <!-- Terms and Conditions -->
                     <div class="space-y-4">
