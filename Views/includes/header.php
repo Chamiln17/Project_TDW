@@ -25,6 +25,7 @@ function afficherNavbar($userRole) {
             '/admin/members' => 'Members'
         ],
         'member' => [
+                '/Project_TDW/Dashboard' => 'Dashboard',
             '/Project_TDW' => 'A Propos',
             '/Project_TDW/evenements' => 'Evenements',
             '/Project_TDW/news' => 'News',

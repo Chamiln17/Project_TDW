@@ -40,7 +40,7 @@ class UserModel
         return $result; // Return the result of the execution
 
     }
-    public function register($username, $email, $password, $prenom, $nom, $adresse, $date_naissance, $type_adhesion, $role = 'member')
+    public function register($username, $email, $password, $prenom, $nom, $adresse ,$city, $date_naissance, $type_adhesion, $role = 'member')
     {
         // Hash the password (if needed)
         // $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
@@ -68,13 +68,14 @@ class UserModel
             $user_id = $this->db->lastInsertId();
 
             // Prepare the query for members table
-            $query = "INSERT INTO members (user_id, first_name, last_name, address, date_of_birth, membership_type_id, registration_date, photo, id_document, recu_paiement)
-                  VALUES (:user_id, :first_name, :last_name, :address, :date_of_birth, :membership_type_id, NOW(), :photo, :id_document, :recu_paiement)";
+            $query = "INSERT INTO members (user_id, first_name, last_name, address , city, date_of_birth, membership_type_id, registration_date, photo, id_document, recu_paiement)
+                  VALUES (:user_id, :first_name, :last_name, :address, :city, :date_of_birth, :membership_type_id, NOW(), :photo, :id_document, :recu_paiement)";
             $params = [
                 ':user_id' => $user_id,
                 ':first_name' => $prenom,
                 ':last_name' => $nom,
                 ':address' => $adresse,
+                ':city' => $city,
                 ':date_of_birth' => $date_naissance,
                 ':membership_type_id' => $this->getMembershipTypeId($type_adhesion),
                 ':photo' => $this->uploadFile('photo' , $user_id),
@@ -276,5 +277,22 @@ class UserModel
         $query = "UPDATE members SET is_blocked = 1 WHERE member_id = :member_id";
         $params = [':member_id' => $memberId];
         return $this->db->execute($query, $params);
+    }
+
+    public function getMembershipTypes()
+    {
+        $this->db->connect();
+        $query = "SELECT * FROM membership_types";
+        $types = $this->db->query($query);
+        $this->db->disconnect();
+        return $types;
+    }
+    public function getCities()
+    {
+        $this->db->connect();
+        $query = "SELECT * FROM cities";
+        $cities = $this->db->query($query);
+        $this->db->disconnect();
+        return $cities;
     }
 }

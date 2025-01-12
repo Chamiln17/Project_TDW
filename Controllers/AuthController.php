@@ -105,6 +105,7 @@ class AuthController
         $prenom = $_POST['prenom'];
         $nom = $_POST['nom'];
         $adresse = $_POST['adresse'];
+        $city = $_POST['city'];
         $date_naissance = $_POST['date_naissance'];
         $type_adhesion = $_POST['type_adhesion'];
         // Validate inputs (basic example)
@@ -145,7 +146,7 @@ class AuthController
         }
 
         // Register the user
-        $result = $this->data->register($username, $email, $password, $prenom, $nom, $adresse, $date_naissance, $type_adhesion);
+        $result = $this->data->register($username, $email, $password, $prenom, $nom, $adresse , $city, $date_naissance, $type_adhesion);
 
         if ($result) {
             $_SESSION['register_success'] = "Registration successful! You can now log in.";
@@ -187,6 +188,15 @@ class AuthController
         } else {
             // Handle error
         }
+    }
+
+    public function getMembershipTypes()
+    {
+        return $this->data->getMembershipTypes();
+    }
+    public function getCities()
+    {
+        return $this->data->getCities();
     }
 
 

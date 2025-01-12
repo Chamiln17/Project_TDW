@@ -11,16 +11,13 @@ class RegisterView
             $this->controller = new AuthController();
         }
     }
-    public function getMembershipsTypes($memberships)
-    {
 
-
-    }
 
 
     public function afficherRegister()
     {
-
+        $membershipTypes = $this->controller->getMembershipTypes();
+        $cities = $this->controller->getCities();
         require_once "./views/includes/header.php";
 
         if (session_status() == PHP_SESSION_NONE) {
@@ -92,7 +89,17 @@ class RegisterView
                             <input type="tel" id="telephone" name="telephone" pattern="[0-9]{10}" required
                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500">
                         </div>
-
+                        <div class="space-y-2">
+                            <label for="city" class="block text-sm font-medium text-gray-700">City</label>
+                            <select id="city" name="city" required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                                    onchange="updateMembershipDetails(this.value)">
+                                <option value="">Sélectionnez votre ville</option>
+                                <?php foreach ($cities as $city): ?>
+                                    <option value="<?php echo htmlspecialchars($city['city_name']); ?>"><?php echo htmlspecialchars($city['city_name']); ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
                         <div class="space-y-2">
                             <label for="adresse" class="block text-sm font-medium text-gray-700">Adresse</label>
                             <textarea id="adresse" name="adresse" rows="3" required
@@ -106,9 +113,9 @@ class RegisterView
 
                         <div class="space-y-2">
                             <label for="photo" class="block text-sm font-medium text-gray-700">Photo d'identité</label>
-                            <input type="file" id="photo" name="photo" accept=".jpg,.png,.pdf" required
+                            <input type="file" id="photo" name="photo" accept=".jpg,.png" required
                                    class="w-full file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100">
-                            <p class="text-sm text-gray-500">Format: JPG, PNG, PDF (max 5MB)</p>
+                            <p class="text-sm text-gray-500">Format: JPG, PNG (max 5MB)</p>
                         </div>
 
                         <div class="space-y-2">
@@ -117,26 +124,26 @@ class RegisterView
                                    class="w-full file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100">
                         </div>
                     <!-- Type d'adhésion -->
-                    <div class="space-y-4">
-                        <h3 class="text-xl font-semibold text-gray-900">Type d'adhésion</h3>
+                        <div class="space-y-4">
+                            <h3 class="text-xl font-semibold text-gray-900">Type d'adhésion</h3>
 
-                        <div class="space-y-2">
-                            <label for="type_adhesion" class="block text-sm font-medium text-gray-700">Choisissez votre type d'adhésion</label>
-                            <select id="type_adhesion" name="type_adhesion" required
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
-                                    onchange="updateMembershipDetails(this.value)">
-                                <option value="">Sélectionnez un type</option>
-                                <option value="classique">Classique</option>
-                                <option value="jeunes">Jeunes</option>
-                                <option value="premium">Premium</option>
-                            </select>
-                        </div>
+                            <div class="space-y-2">
+                                <label for="type_adhesion" class="block text-sm font-medium text-gray-700">Choisissez votre type d'adhésion</label>
+                                <select id="type_adhesion" name="type_adhesion" required
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                                        onchange="updateMembershipDetails(this.value)">
+                                    <option value="">Sélectionnez un type</option>
+                                    <?php foreach ($membershipTypes as $type): ?>
+                                        <option value="<?php echo htmlspecialchars($type['type_name']); ?>"><?php echo htmlspecialchars($type['type_name']); ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
 
-                        <div id="membership_details" class="hidden p-4 bg-gray-50 rounded-lg">
-                            <p id="membership_price" class="font-semibold text-gray-900"></p>
-                            <p id="membership_benefits" class="text-gray-600"></p>
+                            <div id="membership_details" class="hidden p-4 bg-gray-50 rounded-lg">
+                                <p id="membership_price" class="font-semibold text-gray-900"></p>
+                                <p id="membership_benefits" class="text-gray-600"></p>
+                            </div>
                         </div>
-                    </div>
                         <div class="space-y-2">
                             <label for="recu_paiement" class="block text-sm font-medium text-gray-700">Reçu de paiement</label>
                             <input type="file" id="recu_paiement" name="recu_paiement" accept=".pdf" required
@@ -153,7 +160,7 @@ class RegisterView
                             <input type="checkbox" id="terms" name="terms" required
                                    class="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded">
                             <label for="terms" class="text-sm text-gray-700">
-                                J'accepte les termes et conditions de l'association
+                                J'accepte <a href="/Project_TDW/Termes" class="text-red-600 hover:text-red-700 font-semibold"> les termes et conditions de l'association </a>
                             </label>
                         </div>
                     </div>
@@ -168,29 +175,24 @@ class RegisterView
         </div>
 
         <script>
-            function updateMembershipDetails(type) {
-                const details = {
-                    'classique': {
-                        price: '50€',
-                        benefits: 'Accès aux événements standards'
-                    },
-                    'jeunes': {
-                        price: '30€',
-                        benefits: 'Tarif réduit pour les moins de 25 ans'
-                    },
-                    'premium': {
-                        price: '100€',
-                        benefits: 'Accès VIP à tous les événements'
-                    }
-                };
+            // Create a JavaScript object with membership details
+            const membershipDetails = {
+                <?php foreach ($membershipTypes as $type): ?>
+                '<?php echo htmlspecialchars($type['type_name']); ?>': {
+                    price: '<?php echo htmlspecialchars($type['price']); ?>',
+                    benefits: '<?php echo nl2br(htmlspecialchars($type['benefits_description'])); ?>'
+                },
+                <?php endforeach; ?>
+            };
 
+            function updateMembershipDetails(type) {
                 const detailsDiv = document.getElementById('membership_details');
                 const priceElement = document.getElementById('membership_price');
                 const benefitsElement = document.getElementById('membership_benefits');
 
-                if (type && details[type]) {
-                    priceElement.textContent = `Prix: ${details[type].price}`;
-                    benefitsElement.textContent = details[type].benefits;
+                if (membershipDetails[type]) {
+                    priceElement.textContent = 'Prix: ' + membershipDetails[type].price + ' DZD';
+                    benefitsElement.textContent = membershipDetails[type].benefits;
                     detailsDiv.classList.remove('hidden');
                 } else {
                     detailsDiv.classList.add('hidden');
