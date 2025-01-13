@@ -17,6 +17,9 @@ class DashboardView
         $prenom=$member[0]['first_name'];
         $nom=$member[0]['last_name'];
         $id=$member[0]['member_id'];
+        $photo=$member[0]['photo'];
+        $type_adhesion=$member[0]['type_adhesion'];
+        $qrCode = $this->controller->generate_member_qr($id);
 
         require_once "./views/includes/header.php";
         ?>
@@ -31,9 +34,8 @@ class DashboardView
                 <!-- Updated Card Design -->
                 <div class="relative w-full max-w-md mx-auto h-56 rounded-xl overflow-hidden bg-white shadow-lg">
                     <!-- Curved Background -->
-                    <div class="absolute inset-0">
-                        <div class="absolute inset-0 bg-gradient-to-r from-white via-white to-transparent z-10"></div>
-                        <div class="absolute top-0 right-0 w-2/3 h-full bg-red-600 rounded-l-full transform translate-x-1/3"></div>
+                    <div class="absolute top-0 right-0 h-full w-1/2 overflow-hidden">
+                        <img src="./assets/shapes/shape_card.svg" alt="Background Shape" class="h-full w-full object-cover ">
                     </div>
 
                     <!-- Logo -->
@@ -42,20 +44,20 @@ class DashboardView
                     </div>
 
                     <!-- Member Information -->
-                    <div class="relative z-20 p-6 flex flex-col h-full justify-between">
+                    <div class="relative z-20 p-6 flex flex-row h-full justify-between">
                         <div class="space-y-4">
                             <!-- Profile Section -->
-                            <div class="flex items-start space-x-3">
+                            <div class="flex  items-start space-x-3">
                                 <div class="w-16 h-16 rounded-lg overflow-hidden">
                                     <img
-                                            src="<?php echo htmlspecialchars($member['photo_url']); ?>"
+                                            src="<?php echo htmlspecialchars($photo); ?>"
                                             alt="Photo de profil"
                                             class="w-full h-full object-cover"
                                     >
                                 </div>
                                 <div>
                                     <h3 class="text-xl font-bold text-gray-900">
-                                        <?php echo htmlspecialchars($member["first_name"] . ' ' . $member['last_name']); ?>
+                                        <?php echo htmlspecialchars($prenom . ' ' . $nom); ?>
                                     </h3>
                                     <p class="text-sm text-gray-600">Membre</p>
                                 </div>
@@ -64,22 +66,22 @@ class DashboardView
                             <!-- Member Details -->
                             <div class="space-y-1">
                                 <p class="text-sm text-gray-600">
-                                    ID: <?php echo htmlspecialchars($member['member_id']); ?>
+                                    ID: <span class="text-lg font-bold"><?php echo htmlspecialchars($id); ?></span>
                                 </p>
-                                <p class="text-sm text-gray-600">
-                                    Type carte: <?php echo htmlspecialchars(ucfirst($member['type_adhesion'])); ?>
+                                <p class="text-sm  text-gray-600">
+                                    Type carte: <span class="text-lg font-bold"><?php echo htmlspecialchars(ucfirst($type_adhesion)); ?></span>
                                 </p>
                             </div>
                         </div>
 
                         <!-- QR Code -->
-                        <div class="absolute bottom-4 right-4 z-20">
-                            <img
-                                    src="<?php  ?>"
-                                    alt="QR Code"
-                                    class="w-20 h-20 bg-white p-1 rounded-lg"
-                            >
-                        </div>
+                        <?php if ($qrCode): ?>
+                            <div class="absolute bottom-4 right-4 z-20 bg-white rounded-lg p-1">
+                                <img src="<?php echo $qrCode; ?>"
+                                     alt="QR Code"
+                                     class="w-20 h-20">
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>

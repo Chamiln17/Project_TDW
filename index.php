@@ -14,6 +14,7 @@ $app->router->get('/login',[\Controllers\AuthController::class ,'display_Login']
 $app->router->get('/register',[\Controllers\AuthController::class ,'display_Register'] );
 $app->router->get('/catalogue',[\Controllers\CatalogueController::class ,'display'] );
 $app->router->get('/Dashboard',[\Controllers\UserDashboardController::class ,'display'] );
+$app->router->get('dashboard/qrcode/{user_id}', 'UserDashboardController@getQrCode');
 $app->router->post('/login',[\Controllers\AuthController::class ,'login'] );
 $app->router->post('/register',[\Controllers\AuthController::class ,'register'] );
 $app->router->post('/logout',[\Controllers\AuthController::class ,'logout'] );

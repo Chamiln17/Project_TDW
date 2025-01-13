@@ -4,9 +4,11 @@ namespace Controllers;
 
 use DashboardView;
 use Models\MemberModel;
+use Endroid\QrCode\QrCode;
 require_once "Views/members/DashboardView.php";
 
 require_once "models/MemberModel.php";
+
 
 class UserDashboardController
 {
@@ -27,6 +29,11 @@ class UserDashboardController
     {
       return $this->data->getMember($user_id)  ;
     }
+    public function generate_member_qr($member_id)
+    {
+        return $this->data->generateQRCode($member_id);
+    }
+
 
 
 }
