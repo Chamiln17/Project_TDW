@@ -1,4 +1,7 @@
 <?php
+
+use Controllers\ProfileController;
+require_once "./controllers/ProfileController.php";
 require_once "./controllers/HomeController.php";
 require_once "./controllers/AuthController.php";
 require_once "./controllers/CatalogueController.php";
@@ -15,9 +18,11 @@ $app->router->get('/register',[\Controllers\AuthController::class ,'display_Regi
 $app->router->get('/catalogue',[\Controllers\CatalogueController::class ,'display'] );
 $app->router->get('/Dashboard',[\Controllers\UserDashboardController::class ,'display'] );
 $app->router->get('dashboard/qrcode/{user_id}', 'UserDashboardController@getQrCode');
+$app->router->get('/profile', [ProfileController::class, "display"]);
 $app->router->post('/login',[\Controllers\AuthController::class ,'login'] );
 $app->router->post('/register',[\Controllers\AuthController::class ,'register'] );
 $app->router->post('/logout',[\Controllers\AuthController::class ,'logout'] );
+$app->router->post('/profile/update',[\Controllers\ProfileController::class ,'update_member'] );
 $app->router->get("/about", function() {
     echo "About";
 });

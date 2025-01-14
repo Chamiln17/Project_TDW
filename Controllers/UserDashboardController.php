@@ -34,6 +34,10 @@ class UserDashboardController
         return $this->data->generateQRCode($member_id);
     }
 
+    public function getDiscounts($id)
+    {
+        return $this->data->getDiscounts($id);
+    }
 
 
 }

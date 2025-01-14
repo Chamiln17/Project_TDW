@@ -10,7 +10,95 @@ class DashboardView
             $this->controller = new UserDashboardController();
         }
     }
+    function renderDiscountsSection($columns, $rows, $itemsPerPage = 10): void
+    {
+        $columnsJSON = json_encode($columns);
+        $rowsJSON = json_encode($rows);
+        ?>
+        <!-- Discounts Section -->
+        <section class="max-w-7xl mx-auto">
+            <div class="p-8">
+                <h2 class="text-4xl font-bold text-gray-800 mb-3">Les Remises</h2>
+                <p class="text-gray-500 mb-8">Découvrez les réductions exclusives réservées à nos membres</p>
 
+                <!-- Table Container -->
+                <div class="overflow-hidden shadow-xl rounded-xl bg-white border border-gray-100">
+                    <table class="w-full border-collapse bg-white">
+                        <thead>
+                        <tr class="bg-gray-50">
+                            <?php foreach ($columns as $column) : ?>
+                                <th class="px-8 py-5 text-left text-sm font-semibold text-gray-700">
+                                    <?= htmlspecialchars($column) ?>
+                                </th>
+                            <?php endforeach; ?>
+                        </tr>
+                        </thead>
+                        <tbody id="discounts-table">
+                        <!-- Rows will be populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination Buttons -->
+                <div class="mt-8 flex items-center justify-between">
+                    <button id="prev-btn" class="px-4 py-2 bg-gray-200 text-gray-600 rounded-lg">Précédent</button>
+                    <span id="page-info"></span>
+                    <button id="next-btn" class="px-4 py-2 bg-gray-200 text-gray-600 rounded-lg">Suivant</button>
+                </div>
+            </div>
+        </section>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const columns = <?= $columnsJSON ?>;
+                const rows = <?= $rowsJSON ?>;
+                const itemsPerPage = <?= $itemsPerPage ?>;
+                const discountsTable = document.getElementById('discounts-table');
+                const pageInfo = document.getElementById('page-info');
+                const prevBtn = document.getElementById('prev-btn');
+                const nextBtn = document.getElementById('next-btn');
+
+                let currentPage = 1;
+                const totalItems = rows.length;
+                const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+                function renderTable(page) {
+                    const start = (page - 1) * itemsPerPage;
+                    const end = start + itemsPerPage;
+                    const currentRows = rows.slice(start, end);
+
+                    discountsTable.innerHTML = currentRows.map(row => `
+                    <tr>
+                        ${columns.map(column => `
+                            <td class="px-8 py-6">${row[column]}</td>
+                        `).join('')}
+                    </tr>
+                `).join('');
+
+                    pageInfo.textContent = `Page ${page} sur ${totalPages}`;
+                    prevBtn.disabled = page === 1;
+                    nextBtn.disabled = page === totalPages;
+                }
+
+                prevBtn.addEventListener('click', () => {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        renderTable(currentPage);
+                    }
+                });
+
+                nextBtn.addEventListener('click', () => {
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        renderTable(currentPage);
+                    }
+                });
+
+                renderTable(currentPage);
+            });
+        </script>
+        <?php
+    }
     public function afficherDashboard()
     {
         $member=$this->controller->get_member($_SESSION["user_id"]);
@@ -19,7 +107,9 @@ class DashboardView
         $id=$member[0]['member_id'];
         $photo=$member[0]['photo'];
         $type_adhesion=$member[0]['type_adhesion'];
+        $expiration_date=$member[0]['expiration_date'];
         $qrCode = $this->controller->generate_member_qr($id);
+        $discounts = $this->controller->getDiscounts($id);
 
         require_once "./views/includes/header.php";
         ?>
@@ -71,6 +161,9 @@ class DashboardView
                                 <p class="text-sm  text-gray-600">
                                     Type carte: <span class="text-lg font-bold"><?php echo htmlspecialchars(ucfirst($type_adhesion)); ?></span>
                                 </p>
+                                <p class="text-sm  text-gray-600">
+                                    Valide jusqu'au: <span class="text-lg font-bold"><?php echo htmlspecialchars(ucfirst($expiration_date)); ?></span>
+                                </p>
                             </div>
                         </div>
 
@@ -85,10 +178,17 @@ class DashboardView
                     </div>
                 </div>
             </div>
+            <?php
+            $columns = ['Partenaire', 'Type dadhésion', 'Remise (%)', 'Date début', 'Date fin'];
+
+            $this->renderDiscountsSection($columns, $discounts); ?>
+
+        </div>
         </div>
     <?php
         require_once "./views/includes/footer.php";
     }
+
 
 
 

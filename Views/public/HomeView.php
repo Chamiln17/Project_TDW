@@ -122,7 +122,10 @@ class HomeView
                         <button id="next-btn" class="px-4 py-2 bg-gray-200 text-gray-600 rounded-lg">Suivant</button>
                     </div>
             </section>
-
+            <?
+            $columns= ['Logo', 'Nom Partenaire', 'Catégorie', 'Ville', 'Réduction'];
+            $rows = $partners;
+            renderDiscountsSection($columns, $rows);?>
             <!-- Partners Section -->
             <div>
                 <h2 class="text-3xl font-bold text-gray-800 mb-8">Nos Partenaires</h2>

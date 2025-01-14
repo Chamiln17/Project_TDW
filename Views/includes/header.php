@@ -78,11 +78,11 @@ function afficherNavbar($userRole) {
 
     // Different buttons based on user role
     if ($userRole === 'member') {
-        echo '<a href="/member/profile" class="bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">My Profile</a>
+        echo '<a href="/Project_TDW/profile" class="bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">My Profile</a>
 <form action="/Project_TDW/logout" method="POST">
                   <button type="submit" class="bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700">Logout</button>
               </form>';    } elseif ($userRole === 'admin') {
-        echo '<a href="/admin/dashboard" class="bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Dashboard</a>
+        echo '<a href="/Project_TDW/profile" class="bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Dashboard</a>
 <form action="/Project_TDW/logout" method="POST">
                   <button type="submit" class="bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700">Logout</button>
               </form>';    } else {

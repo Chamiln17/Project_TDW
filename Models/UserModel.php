@@ -15,32 +15,8 @@ class UserModel
     {
         $this->db = new Database();
     }
-    public function register_hashed($username, $email, $password, $role = 'member')
-    {
-        // Hash the password
-        // Connect to the database
-        $this->db->connect()
-        ;
 
-        // Prepare the query
-        $query = "INSERT INTO users (username, email, password, role) VALUES (:username, :email, :password, :role)";
-        $params = [
-            ':username' => $username,
-            ':email' => $email,
-            ':password' => $password,
-            ':role' => $role
-        ];
-
-        // Execute the query
-        $result = $this->db->execute($query, $params);
-
-        // Disconnect from the database
-        $this->db->disconnect();
-
-        return $result; // Return the result of the execution
-
-    }
-    public function register($username, $email, $password, $prenom, $nom, $adresse ,$city, $date_naissance, $type_adhesion, $role = 'member')
+    public function register($username, $email, $password,$telephone ,$prenom, $nom, $adresse ,$city, $date_naissance, $type_adhesion, $role = 'member')
     {
         // Hash the password (if needed)
         // $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
@@ -68,11 +44,12 @@ class UserModel
             $user_id = $this->db->lastInsertId();
 
             // Prepare the query for members table
-            $query = "INSERT INTO members (user_id, first_name, last_name, address , city, date_of_birth, membership_type_id, registration_date, photo, id_document, recu_paiement)
-                  VALUES (:user_id, :first_name, :last_name, :address, :city, :date_of_birth, :membership_type_id, NOW(), :photo, :id_document, :recu_paiement)";
+            $query = "INSERT INTO members (user_id, first_name,telephone, last_name, address , city, date_of_birth, membership_type_id, registration_date, photo, id_document, recu_paiement)
+                  VALUES (:user_id, :first_name,:telephone, :last_name, :address, :city, :date_of_birth, :membership_type_id, NOW(), :photo, :id_document, :recu_paiement)";
             $params = [
                 ':user_id' => $user_id,
                 ':first_name' => $prenom,
+                ':telephone' => $telephone,
                 ':last_name' => $nom,
                 ':address' => $adresse,
                 ':city' => $city,
