@@ -95,7 +95,10 @@ class CatalogueView {
                                     </h3>
                                     <p class="text-gray-600 mb-2"><?= htmlspecialchars($partner['city']) ?></p>
                                     <p class="text-brand-red font-semibold mb-4"><?= htmlspecialchars($partner['offer']) ?></p>
-                                    <a href="#" class="text-nav-gray hover:text-brand-red font-medium">Plus de détails →</a>
+                                    <a href="/Project_TDW/catalogue/<?= $partner['partnerId'] ?>"
+                                       class="text-nav-gray hover:text-brand-red font-medium">
+                                        Plus de détails →
+                                    </a>
                                 </div>
                             </div>
                         <?php endforeach; ?>

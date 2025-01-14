@@ -157,4 +157,8 @@ class DiscountsView
 <?php
     }
 
+    public function display(mixed $membershipType, $discounts, $advantages)
+    {
+    }
+
 }

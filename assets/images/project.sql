@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 14, 2025 at 12:27 AM
+-- Generation Time: Jan 14, 2025 at 03:57 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -424,25 +424,26 @@ CREATE TABLE `members` (
   `recu_paiement` varchar(255) DEFAULT NULL,
   `date_of_birth` date DEFAULT NULL,
   `is_validated` tinyint(1) NOT NULL,
-  `is_blocked` tinyint(1) NOT NULL
+  `is_blocked` tinyint(1) NOT NULL,
+  `phone_number` varchar(15) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `members`
 --
 
-INSERT INTO `members` (`member_id`, `user_id`, `first_name`, `last_name`, `address`, `city`, `membership_type_id`, `registration_date`, `expiration_date`, `photo`, `id_document`, `recu_paiement`, `date_of_birth`, `is_validated`, `is_blocked`) VALUES
-(1, 2, 'First2', 'Last2', 'Address 2', 'Constantine', 3, '2024-08-26', '2025-09-09', 'assets/images/Chamil.jpg', NULL, NULL, NULL, 1, 0),
-(2, 3, 'First3', 'Last3', 'Address 3', 'Annaba', 4, '2024-10-14', '2025-03-10', 'assets/images/Chamil.jpg', NULL, NULL, NULL, 0, 0),
-(3, 4, 'First4', 'Last4', 'Address 4', 'Blida', 1, '2024-11-19', '2025-03-17', NULL, NULL, NULL, NULL, 0, 0),
-(4, 5, 'First5', 'Last5', 'Address 5', 'Algiers', 2, '2024-07-04', '2025-01-17', NULL, NULL, NULL, NULL, 0, 0),
-(5, 6, 'First6', 'Last6', 'Address 6', 'Oran', 3, '2024-06-09', '2025-11-09', NULL, NULL, NULL, NULL, 0, 0),
-(6, 7, 'First7', 'Last7', 'Address 7', 'Constantine', 4, '2024-08-03', '2025-09-03', NULL, NULL, NULL, NULL, 0, 0),
-(7, 8, 'First8', 'Last8', 'Address 8', 'Annaba', 1, '2024-01-19', '2025-12-04', NULL, NULL, NULL, NULL, 0, 0),
-(8, 9, 'First9', 'Last9', 'Address 9', 'Blida', 2, '2024-06-02', '2025-04-30', NULL, NULL, NULL, NULL, 0, 0),
-(9, 10, 'First10', 'Last10', 'Address 10', 'Algiers', 3, '2024-04-19', '2025-09-19', NULL, NULL, NULL, NULL, 0, 0),
-(19, 50, 'Chamel Nadir', 'Bouacha', 'cité 322 logements batiment F numéro 4 Imama , Mansourah', 'Algiers', 1, '2025-01-11', NULL, 'uploads/50_photo_Projet TDW 2024-2025 (1).pdf', 'uploads/50_id_Projet TDW 2024-2025 (1).pdf', 'uploads/50_recu_Projet TDW 2024-2025 (1).pdf', '2004-02-16', 0, 0),
-(20, 51, 'abdessamad', 'Seddiki', 'hennaya tlemcen ', 'Tlemcen', 1, '2025-01-12', NULL, 'uploads/51_photo_Projet TDW 2024-2025 (1).pdf', 'uploads/51_id_Projet TDW 2024-2025 (1).pdf', 'uploads/51_recu_Projet TDW 2024-2025 (1).pdf', '2002-09-04', 0, 0);
+INSERT INTO `members` (`member_id`, `user_id`, `first_name`, `last_name`, `address`, `city`, `membership_type_id`, `registration_date`, `expiration_date`, `photo`, `id_document`, `recu_paiement`, `date_of_birth`, `is_validated`, `is_blocked`, `phone_number`) VALUES
+(1, 2, 'dsdqsd', 'sdsdsqdqs', 'Addsqdqsdqsress 2', 'Tébessa', 3, '2024-08-26', '2025-09-09', 'uploads/2_photo_1736818940.jpg', 'uploads/2_piece_identite_1736818940.jpg', NULL, '2004-10-16', 1, 0, '+213551234567'),
+(2, 3, 'First3', 'Last3', 'Address 3', 'Annaba', 4, '2024-10-14', '2025-03-10', 'assets/images/Chamil.jpg', NULL, NULL, NULL, 0, 0, '+213662345678'),
+(3, 4, 'First4', 'Last4', 'Address 4', 'Blida', 1, '2024-11-19', '2025-03-17', NULL, NULL, NULL, NULL, 0, 0, '+213773456789'),
+(4, 5, 'First5', 'Last5', 'Address 5', 'Algiers', 2, '2024-07-04', '2025-01-17', NULL, NULL, NULL, NULL, 0, 0, '+213664567890'),
+(5, 6, 'First6', 'Last6', 'Address 6', 'Oran', 3, '2024-06-09', '2025-11-09', NULL, NULL, NULL, NULL, 0, 0, '+213775678901'),
+(6, 7, 'First7', 'Last7', 'Address 7', 'Constantine', 4, '2024-08-03', '2025-09-03', NULL, NULL, NULL, NULL, 0, 0, '+213556789012'),
+(7, 8, 'First8', 'Last8', 'Address 8', 'Annaba', 1, '2024-01-19', '2025-12-04', NULL, NULL, NULL, NULL, 0, 0, '+213667890123'),
+(8, 9, 'First9', 'Last9', 'Address 9', 'Blida', 2, '2024-06-02', '2025-04-30', NULL, NULL, NULL, NULL, 0, 0, '+213778901234'),
+(9, 10, 'First10', 'Last10', 'Address 10', 'Algiers', 3, '2024-04-19', '2025-09-19', NULL, NULL, NULL, NULL, 0, 0, '+213559012345'),
+(19, 50, 'Chamel Nadir', 'Bouacha', 'cité 322 logements batiment F numéro 4 Imama , Mansourah', 'Algiers', 1, '2025-01-11', NULL, 'uploads/50_photo_Projet TDW 2024-2025 (1).pdf', 'uploads/50_id_Projet TDW 2024-2025 (1).pdf', 'uploads/50_recu_Projet TDW 2024-2025 (1).pdf', '2004-02-16', 0, 0, '+213660123456'),
+(20, 51, 'abdessamad', 'Seddiki', 'hennaya tlemcen ', 'Tlemcen', 1, '2025-01-12', NULL, 'uploads/51_photo_Projet TDW 2024-2025 (1).pdf', 'uploads/51_id_Projet TDW 2024-2025 (1).pdf', 'uploads/51_recu_Projet TDW 2024-2025 (1).pdf', '2002-09-04', 0, 0, '+213771234567');
 
 -- --------------------------------------------------------
 
@@ -612,7 +613,7 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`user_id`, `username`, `password`, `role`, `email`) VALUES
 (1, 'admin', '123456', 'admin', NULL),
-(2, 'member1', '123456', 'member', NULL),
+(2, 'member1', '123456', 'member', 'c2004@gmail.com'),
 (3, 'member2', '123456', 'member', NULL),
 (4, 'member3', '123456', 'member', NULL),
 (5, 'member4', '123456', 'member', NULL),

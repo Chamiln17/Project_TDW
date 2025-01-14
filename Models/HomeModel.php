@@ -27,11 +27,13 @@ class HomeModel
 
         $this->partners = $this->db->query("
     SELECT 
+        P.partner_id AS partnerId,
         P.name AS partnerName,
         C.category_name AS partnerCategory,
         P.logo AS partnerLogo,
         P.city AS city,
         P.offer AS offer
+        
     FROM 
         partners AS P
     JOIN 
