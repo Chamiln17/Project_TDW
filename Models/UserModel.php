@@ -70,7 +70,7 @@ class UserModel
             $this->db->disconnect();
 
             return true; // Registration successful
-        } catch (PDOException $e) {
+        } catch (\Exception $e) {
             // Rollback the transaction if any query fails
             $this->db->rollBack();
 

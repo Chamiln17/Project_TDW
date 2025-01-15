@@ -2,6 +2,7 @@
 
 namespace Controllers;
 
+use JetBrains\PhpStorm\NoReturn;
 use LoginView;
 use Models\UserModel;
 use RegisterView;
@@ -158,7 +159,7 @@ class AuthController
         exit();
     }
 
-    public function logout()
+    #[NoReturn] public function logout(): void
     {
         if (session_status() == PHP_SESSION_NONE) {
             session_start();

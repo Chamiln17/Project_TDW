@@ -29,6 +29,7 @@ function afficherNavbar($userRole) {
             '/Project_TDW' => 'A Propos',
             '/Project_TDW/evenements' => 'Evenements',
             '/Project_TDW/news' => 'News',
+            "/Project_TDW/donation"=> "Donation",
             '/Project_TDW/catalogue' => 'Partenaires',
             '/Project_TDW/discounts_and_advantages' => 'Remises et Avantages'
         ],
@@ -37,7 +38,7 @@ function afficherNavbar($userRole) {
             '/Project_TDW/evenements' => 'Evenements',
             '/Project_TDW/news' => 'News',
             '/Project_TDW/catalogue' => 'Partenaires',
-            '/Project_TDW/contact' => 'Contactez nous'
+            "/Project_TDW/donation"=> "Donation",
         ]
     ];
 

@@ -81,7 +81,7 @@ class CatalogueView {
                     <h2 class="text-2xl font-semibold text-nav-gray mb-6"><?= htmlspecialchars($category) ?></h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <?php foreach($categoryPartners as $partner): ?>
-                            <div class="bg-white rounded-lg shadow-sm overflow-hidden partner-card"
+                            <div class="bg-white rounded-lg shadow-lg overflow-hidden partner-card"
                                  data-city="<?= htmlspecialchars($partner['city']) ?>"
                                  data-category="<?= htmlspecialchars($partner['partnerCategory']) ?>">
                                 <div class="p-6">

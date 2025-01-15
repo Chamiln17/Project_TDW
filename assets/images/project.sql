@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 14, 2025 at 03:57 AM
+-- Generation Time: Jan 14, 2025 at 10:37 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -304,23 +304,23 @@ CREATE TABLE `donations` (
   `member_id` int(11) DEFAULT NULL,
   `amount` decimal(10,2) NOT NULL,
   `donation_date` date DEFAULT NULL,
-  `payment_method_id` int(11) DEFAULT NULL
+  `recu_paiment` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `donations`
 --
 
-INSERT INTO `donations` (`donation_id`, `member_id`, `amount`, `donation_date`, `payment_method_id`) VALUES
-(1, 1, 4913.26, '2024-06-12', 2),
-(2, 2, 9183.83, '2024-10-22', 2),
-(3, 3, 5979.25, '2024-06-23', 4),
-(4, 4, 893.47, '2024-03-19', 4),
-(5, 5, 6040.90, '2024-11-10', 1),
-(6, 6, 3559.03, '2024-05-14', 1),
-(7, 7, 5335.79, '2024-02-28', 4),
-(8, 8, 5793.67, '2024-09-02', 1),
-(9, 9, 8929.81, '2024-03-26', 2);
+INSERT INTO `donations` (`donation_id`, `member_id`, `amount`, `donation_date`, `recu_paiment`) VALUES
+(1, 1, 4913.26, '2024-06-12', NULL),
+(2, 2, 9183.83, '2024-10-22', NULL),
+(3, 3, 5979.25, '2024-06-23', NULL),
+(4, 4, 893.47, '2024-03-19', NULL),
+(5, 5, 6040.90, '2024-11-10', NULL),
+(6, 6, 3559.03, '2024-05-14', NULL),
+(7, 7, 5335.79, '2024-02-28', NULL),
+(8, 8, 5793.67, '2024-09-02', NULL),
+(9, 9, 8929.81, '2024-03-26', NULL);
 
 -- --------------------------------------------------------
 
@@ -575,27 +575,6 @@ INSERT INTO `partners` (`partner_id`, `user_id`, `name`, `category_id`, `city`, 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `payment_methods`
---
-
-CREATE TABLE `payment_methods` (
-  `method_id` int(11) NOT NULL,
-  `method_name` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `payment_methods`
---
-
-INSERT INTO `payment_methods` (`method_id`, `method_name`) VALUES
-(1, 'Bank Transfer'),
-(2, 'Credit Card'),
-(3, 'Cash'),
-(4, 'PayPal');
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `users`
 --
 
@@ -736,8 +715,7 @@ ALTER TABLE `discounts`
 --
 ALTER TABLE `donations`
   ADD PRIMARY KEY (`donation_id`),
-  ADD KEY `member_id` (`member_id`),
-  ADD KEY `payment_method_id` (`payment_method_id`);
+  ADD KEY `member_id` (`member_id`);
 
 --
 -- Indexes for table `events`
@@ -787,12 +765,6 @@ ALTER TABLE `partners`
   ADD PRIMARY KEY (`partner_id`),
   ADD KEY `user_id` (`user_id`),
   ADD KEY `category_id` (`category_id`);
-
---
--- Indexes for table `payment_methods`
---
-ALTER TABLE `payment_methods`
-  ADD PRIMARY KEY (`method_id`);
 
 --
 -- Indexes for table `users`
@@ -898,12 +870,6 @@ ALTER TABLE `partners`
   MODIFY `partner_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
--- AUTO_INCREMENT for table `payment_methods`
---
-ALTER TABLE `payment_methods`
-  MODIFY `method_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
@@ -944,8 +910,7 @@ ALTER TABLE `discounts`
 -- Constraints for table `donations`
 --
 ALTER TABLE `donations`
-  ADD CONSTRAINT `donations_ibfk_1` FOREIGN KEY (`member_id`) REFERENCES `members` (`member_id`),
-  ADD CONSTRAINT `donations_ibfk_2` FOREIGN KEY (`payment_method_id`) REFERENCES `payment_methods` (`method_id`);
+  ADD CONSTRAINT `donations_ibfk_1` FOREIGN KEY (`member_id`) REFERENCES `members` (`member_id`);
 
 --
 -- Constraints for table `favorite_partners`

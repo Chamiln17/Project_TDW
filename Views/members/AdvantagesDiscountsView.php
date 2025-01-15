@@ -1,6 +1,25 @@
 <?php
 class AdvantagesDiscountsView {
-    public function display($membershipType, $discounts, $advantages) {
+
+    private $controller;
+
+    function __construct()
+    {
+        if ($this->controller == null) {
+            $this->controller = new \Controllers\AdvantagesDiscountsController();
+        }
+    }
+    public function display() {
+
+        // Get member's membership type
+        $user_id = $_SESSION['user_id'];
+        $memberId = $this->controller->getMemberId($user_id)["member_id"];
+        $membershipType = $this->controller->getMembershipType($memberId);
+
+
+        // Get discounts and advantages
+        $discounts = $this->controller->getDiscountsByMembershipType($membershipType['type_id']);
+        $advantages = $this->controller->getAdvantagesByMembershipType($membershipType['type_id']);
         require_once "./views/includes/header.php";
         ?>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

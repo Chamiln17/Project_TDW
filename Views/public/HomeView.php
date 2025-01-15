@@ -41,7 +41,7 @@ class HomeView
                                 bat pour<br>
                                 l'espoir.
                             </h1>
-                            <a href="#" class="inline-block bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-8 rounded-lg text-lg transition-colors duration-200">
+                            <a href="/Project_TDW/donation" class="inline-block bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-8 rounded-lg text-lg transition-colors duration-200">
                                 Faites Une Donation
                             </a>
                         </div>
