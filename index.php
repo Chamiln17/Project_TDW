@@ -10,6 +10,7 @@ require_once "./controllers/PartnerController.php";
 require_once "./controllers/AdvantagesDiscountsController.php";
 require_once "./controllers/DonationController.php";
 require_once "./controllers/EventController.php";
+require_once "./controllers/AdminPartnerController.php";
 require_once __DIR__ . "/core/Application.php";
 
 $app = new Application();
@@ -36,7 +37,8 @@ $app->router->post('/register',[\Controllers\AuthController::class ,'register'] 
 $app->router->post('/logout',[\Controllers\AuthController::class ,'logout'] );
 $app->router->post('/profile/update',[\Controllers\ProfileController::class ,'update_member'] );
 $app->router->post('/donation/submit', [\Controllers\DonationController::class, 'handleDonation']);
-$app->router->post('/events/:id/register', [\Controllers\EventController::class, 'handleVolunteerRegistration']);
-
+$app->router->post('/events/{eventId}/register', [\Controllers\EventController::class, 'handleVolunteerRegistration']);
+$app->router->post("/catalogue/{partner_id}/favorite",[\Controllers\PartnerController::class ,'handleFavorite']);
+$app->router->get("/admin/partners",[\Controllers\AdminPartnerController::class,"displayPartners"]);
 
 $app->run();

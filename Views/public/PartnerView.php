@@ -16,6 +16,11 @@ class PartnerView {
         $partner = $this->controller->getPartnerDetails($partnerId);
         $advantages = $this->controller->getPartnerAdvantages($partnerId);
         $discounts = $this->controller->getPartnerDiscounts($partnerId);
+        $isFavorite=false;
+        if (isset($_SESSION['user_id'])) {
+            $isFavorite = $this->controller->getFavoriteStatus($_SESSION['user_id'], $partner["partner_id"]);
+        }
+        var_dump($isFavorite);
         ?>
 
         <div class="min-h-screen bg-gray-50">
@@ -51,11 +56,34 @@ class PartnerView {
                                 </span>
                             </div>
                             <?php if (isset($_SESSION['user_id'])): ?>
-                                <button id="favoriteBtn"
-                                        class="bg-red-600 text-white px-6 py-2 rounded-full hover:bg-red-700 transition duration-150"
-                                        onclick="toggleFavorite(<?= $partnerId ?>)">
-                                    <?= $partner['isFavorite'] ? 'Retirer des favoris' : 'Ajouter aux favoris' ?>
-                                </button>
+                                <form action="/Project_TDW/catalogue/<?= $partnerId ?>/favorite" method="POST">
+                                    <?php if (isset($_SESSION['error'])): ?>
+                                        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                                            <span class="block sm:inline"><?= htmlspecialchars($_SESSION['error']) ?></span>
+                                        </div>
+                                        <?php unset($_SESSION['error']); ?>
+                                    <?php endif; ?>
+
+                                    <?php if (isset($_SESSION['success'])): ?>
+                                        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                                            <span class="block sm:inline"><?= htmlspecialchars($_SESSION['success']) ?></span>
+                                        </div>
+                                        <?php unset($_SESSION['success']); ?>
+                                    <?php endif; ?>
+                                    <?php if ($isFavorite): ?>
+                                        <input type="hidden" name="action" value="deregister">
+                                        <button type="submit"
+                                                class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                                            Enlever des Favoris
+                                        </button>
+                                    <?php else: ?>
+                                        <input type="hidden" name="action" value="register">
+                                        <button type="submit"
+                                                class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                                            Ajouter aux Favoris
+                                        </button>
+                                    <?php endif; ?>
+                                </form>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -107,30 +135,6 @@ class PartnerView {
                 </div>
             </div>
         </div>
-
-        <script>
-            function toggleFavorite(partnerId) {
-                fetch('/toggle-favorite.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ partnerId })
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            const btn = document.getElementById('favoriteBtn');
-                            if (data.isFavorite) {
-                                btn.textContent = 'Retirer des favoris';
-                            } else {
-                                btn.textContent = 'Ajouter aux favoris';
-                            }
-                        }
-                    })
-                    .catch(error => console.error('Error:', error));
-            }
-        </script>
 
         <?php
         require_once "./views/includes/footer.php";

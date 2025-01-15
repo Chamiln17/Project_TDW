@@ -37,17 +37,34 @@ class EventDetailsView {
 
                             <?php if ($event['status'] === 'open' && isset($_SESSION['user_id'])): ?>
                                 <div class="mt-8">
-                                    <?php if ($isRegistered): ?>
-                                        <button onclick="handleVolunteerAction(<?= $event['event_id'] ?>, false)"
-                                                class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-                                            Vous êtes inscrit - Se désinscrire
-                                        </button>
-                                    <?php else: ?>
-                                        <button onclick="handleVolunteerAction(<?= $event['event_id'] ?>, true)"
-                                                class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
-                                            S'inscrire comme bénévole
-                                        </button>
-                                    <?php endif; ?>
+                                    <form action="/Project_TDW/events/<?= $event['event_id'] ?>/register" method="POST">
+                                        <?php if (isset($_SESSION['error'])): ?>
+                                            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                                                <span class="block sm:inline"><?= htmlspecialchars($_SESSION['error']) ?></span>
+                                            </div>
+                                            <?php unset($_SESSION['error']); ?>
+                                        <?php endif; ?>
+
+                                        <?php if (isset($_SESSION['success'])): ?>
+                                            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                                                <span class="block sm:inline"><?= htmlspecialchars($_SESSION['success']) ?></span>
+                                            </div>
+                                            <?php unset($_SESSION['success']); ?>
+                                        <?php endif; ?>
+                                        <?php if ($isRegistered): ?>
+                                            <input type="hidden" name="action" value="deregister">
+                                            <button type="submit"
+                                                    class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                                                Vous êtes inscrit - Se désinscrire
+                                            </button>
+                                        <?php else: ?>
+                                            <input type="hidden" name="action" value="register">
+                                            <button type="submit"
+                                                    class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                                                S'inscrire comme bénévole
+                                            </button>
+                                        <?php endif; ?>
+                                    </form>
                                 </div>
                             <?php endif; ?>
                         </div>
@@ -70,30 +87,6 @@ class EventDetailsView {
                 </div>
             </div>
         </div>
-        <script>
-            function handleVolunteerAction(eventId, isRegistering) {
-                const formData = new FormData();
-                formData.append('action', isRegistering ? 'register' : 'deregister');
-
-                fetch(`/Project_TDW/events/${eventId}/register`, {
-                    method: 'POST',
-                    body: formData
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert(data.message);
-                            location.reload();
-                        } else {
-                            alert(data.message);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Une erreur est survenue. Veuillez réessayer.');
-                    });
-            }
-        </script>
         <?php
         require_once "./Views/includes/footer.php";
     }
