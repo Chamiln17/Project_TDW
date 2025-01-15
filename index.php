@@ -9,10 +9,13 @@ require_once "./controllers/UserDashboardController.php";
 require_once "./controllers/PartnerController.php";
 require_once "./controllers/AdvantagesDiscountsController.php";
 require_once "./controllers/DonationController.php";
+require_once "./controllers/EventController.php";
 require_once __DIR__ . "/core/Application.php";
 
 $app = new Application();
-
+$app->router->get("/404_Error", function() {
+    echo "404 Error";
+});
 $app->router->get('/',[\Controllers\HomeController::class ,'display'] );
 $app->router->get('/home',[\Controllers\HomeController::class ,'display'] );
 $app->router->get('/login',[\Controllers\AuthController::class ,'display_Login'] );
@@ -24,15 +27,16 @@ $app->router->get('dashboard/qrcode/{user_id}', 'UserDashboardController@getQrCo
 $app->router->get('/profile', [ProfileController::class, "display"]);
 $app->router->get('/discounts_and_advantages', [\Controllers\AdvantagesDiscountsController::class, 'display']);
 $app->router->get('/donation', [\Controllers\DonationController::class, 'displayDonationForm']);
-$app->router->get("/donation-history",[\Controllers\DonationController::class, 'displayDonationForm']);
+$app->router->get("/donation/history",[\Controllers\DonationController::class, 'displayDonationHistory']);
+$app->router->get("/events/{event_id}",[\Controllers\EventController::class, 'displayEventDetails']);
+$app->router->get("/events",[\Controllers\EventController::class, 'displayEvents']);
 
 $app->router->post('/login',[\Controllers\AuthController::class ,'login'] );
 $app->router->post('/register',[\Controllers\AuthController::class ,'register'] );
 $app->router->post('/logout',[\Controllers\AuthController::class ,'logout'] );
 $app->router->post('/profile/update',[\Controllers\ProfileController::class ,'update_member'] );
-$app->router->post('/donation', [\Controllers\DonationController::class, 'donate']);
-$app->router->get("/about", function() {
-    echo "About";
-});
+$app->router->post('/donation/submit', [\Controllers\DonationController::class, 'handleDonation']);
+$app->router->post('/events/:id/register', [\Controllers\EventController::class, 'handleVolunteerRegistration']);
+
 
 $app->run();

@@ -16,7 +16,7 @@ class UserModel
         $this->db = new Database();
     }
 
-    public function register($username, $email, $password,$telephone ,$prenom, $nom, $adresse ,$city, $date_naissance, $type_adhesion, $role = 'member')
+    public function register($username, $email, $password,$telephone ,$prenom, $nom, $adresse ,$city, $date_naissance, $type_adhesion, $role = 'member'): bool
     {
         // Hash the password (if needed)
         // $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
@@ -165,13 +165,19 @@ class UserModel
             }
             if ($field == 'photo') {
                 $fileName = $userID . '_photo_' . basename($_FILES[$field]['name']);
+                $uploadDir = 'uploads/photos/';
             } elseif ($field == 'piece_identite') {
                 $fileName = $userID . '_id_' . basename($_FILES[$field]['name']);
+                $uploadDir = 'uploads/id_documents/';
             } elseif ($field == 'recu_paiement') {
                 $fileName = $userID . '_recu_' . basename($_FILES[$field]['name']);
+                $uploadDir = 'uploads/recu_paiements/';
             }
             else {
             $fileName = basename($_FILES[$field]['name']);
+            }
+            if (!file_exists($uploadDir)) {
+                mkdir($uploadDir, 0755, true); // Create directory if it doesn't exist
             }
             $filePath = $uploadDir . $fileName;
             if (move_uploaded_file($_FILES[$field]['tmp_name'], $filePath)) {

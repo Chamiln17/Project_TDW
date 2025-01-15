@@ -4,6 +4,7 @@ class DonationView
 {
     public function afficherDonation(): void
     {
+        $role =$_SESSION["role"] ?? "public";
         require_once "./views/includes/header.php";
         ?>
         <div class="min-h-screen bg-gray-50 py-12">
@@ -12,11 +13,41 @@ class DonationView
                 <div class="text-center mb-12">
                     <h1 class="text-4xl font-bold text-gray-900 mb-4">Faites un don</h1>
                     <p class="text-lg text-gray-600">Votre générosité fait la différence dans la vie des autres</p>
+                    <p class="text-lg text-gray-600">CCP: 1234567890</p>
                 </div>
-
+                <?php if($role!="member" && $role!="admin"):
+                    echo '
+                    <div class="bg-white rounded-2xl shadow-xl p-8">
+                        <div class="text-center">
+                            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Connectez-vous pour faire un don et beneficier d\'une traçabilité</h2>
+                            <a href="/Project_TDW/login" class="bg-red-600 text-white px-6 py-2 rounded-full hover:bg-red-700 transition duration-150">
+                                Se connecter
+                            </a>
+                        </div>
+                    </div>
+                    </div>'
+                ?>
+                <!-- Donation Form -->
+                <?php else: ?>
                 <!-- Donation Form -->
                 <div class="bg-white rounded-2xl shadow-xl p-8">
-                    <form action="/Project_TDW/donation" id="donationForm" class="space-y-6" method="POST" enctype="multipart/form-data">
+                    <!-- History Button -->
+                    <div class="mb-6 text-right">
+                        <a href="/Project_TDW/donation/history"
+                           class="inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                            Historique des dons
+                        </a>
+                    </div>
+
+                    <form action="/Project_TDW/donation/submit" id="donationForm" class="space-y-6" method="POST" enctype="multipart/form-data">
+                        <?php
+/*                        if (isset($_SESSION['error'])) {
+                            echo "<div class='bg-red-50 text-red-600 px-4 py-3 rounded-md' role='alert'>" .
+                                htmlspecialchars($_SESSION['error']) .
+                                "</div>";
+                            unset($_SESSION['error']);
+                        }
+                        */?>
                         <!-- Amount Input -->
                         <div>
                             <label for="amount" class="block text-sm font-medium text-gray-700 mb-2">
@@ -126,7 +157,8 @@ class DonationView
             });
         </script>
 
-        <?php
+    <?php
+    endif;
         require_once "./views/includes/footer.php";
     }
 }

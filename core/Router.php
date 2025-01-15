@@ -41,6 +41,9 @@ class Router {
         return false;
     }
 
+    /**
+     * @throws ReflectionException
+     */
     public function resolve() {
         $path = $this->request->getPath();
         $method = strtolower($this->request->getMethod());
@@ -63,10 +66,24 @@ class Router {
         // If callback is an array [class, method]
         if (is_array($callback)) {
             $controller = new $callback[0]();
-            return call_user_func_array([$controller, $callback[1]], $params);
+            $method = $callback[1];
+
+            // Use reflection to get the method signature
+            $reflectionMethod = new ReflectionMethod($controller, $method);
+            $namedParams = array_map(function ($param) use ($params) {
+                return $params[$param->getName()] ?? null;
+            }, $reflectionMethod->getParameters());
+
+            return call_user_func_array([$controller, $method], $namedParams);
         }
 
         // If callback is a closure/function
-        return call_user_func_array($callback, $params);
+        // Use reflection to get the function signature
+        $reflectionFunction = new ReflectionFunction($callback);
+        $namedParams = array_map(function ($param) use ($params) {
+            return $params[$param->getName()] ?? null;
+        }, $reflectionFunction->getParameters());
+
+        return call_user_func_array($callback, $namedParams);
     }
 }

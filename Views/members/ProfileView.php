@@ -89,7 +89,7 @@ class ProfileView {
                                 <input type="tel"
                                        id="phone"
                                        name="phone"
-                                       value="<?php echo htmlspecialchars($memberData['phone_number']); ?>"
+                                       value="<?php echo htmlspecialchars($memberData['telephone']); ?>"
                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
                                        required
                                 />

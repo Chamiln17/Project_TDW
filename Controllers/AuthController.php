@@ -104,6 +104,7 @@ class AuthController
         $email = $_POST['email'];
         $password = $_POST['password'];
         $prenom = $_POST['prenom'];
+        $telephone = $_POST['telephone'];
         $nom = $_POST['nom'];
         $adresse = $_POST['adresse'];
         $city = $_POST['city'];
@@ -147,8 +148,7 @@ class AuthController
         }
 
         // Register the user
-        $result = $this->data->register($username, $email, $password, $prenom, $nom, $adresse , $city, $date_naissance, $type_adhesion);
-
+        $result = $this->data->register($username, $email, $password, $telephone,$prenom, $nom, $adresse , $city, $date_naissance, $type_adhesion);
         if ($result) {
             $_SESSION['register_success'] = "Registration successful! You can now log in.";
             header("Location: login");

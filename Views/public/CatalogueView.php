@@ -10,21 +10,24 @@ class CatalogueView {
     }
 
     // Helper function to get unique cities
-    private function getUniqueCities($partners) {
+    private function getUniqueCities($partners): array
+    {
         return array_unique(array_map(function($partner) {
             return $partner['city'];
         }, $partners));
     }
 
     // Helper function to get unique categories
-    private function getUniqueCategories($partners) {
+    private function getUniqueCategories($partners): array
+    {
         return array_unique(array_map(function($partner) {
             return $partner['partnerCategory'];
         }, $partners));
     }
 
     // Helper function to group partners by category
-    private function groupPartnersByCategory($partners) {
+    private function groupPartnersByCategory($partners): array
+    {
         $grouped = [];
         foreach ($partners as $partner) {
             $category = $partner['partnerCategory'];
@@ -36,7 +39,8 @@ class CatalogueView {
         return $grouped;
     }
 
-    function afficherCatalogue() {
+    function afficherCatalogue(): void
+    {
         require_once "./views/includes/header.php";
         $partners = $this->controller->getPartners();
         $cities = $this->getUniqueCities($partners);
