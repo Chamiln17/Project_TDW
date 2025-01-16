@@ -66,16 +66,11 @@ class PartnerModel {
     {
         try {
             $this->db->connect();
-
-            // First get the member_id
             $member = $this->getMember($user_id);
             if (empty($member)) {
                 return false;
             }
-
             $member_id = $member[0]['member_id'];
-
-            // Check favorite status
             $this->db->connect();
             $status = $this->db->query(
                 "SELECT COUNT(*) as is_favorite 
@@ -87,10 +82,9 @@ class PartnerModel {
                     ':partner_id' => $partner_id
                 ]
             );
-
             return !empty($status) && $status[0]['is_favorite'] > 0;
         } catch (\Exception $e) {
-            // Log error if needed
+            error_log("Error in getFavoriteStatus: " . $e->getMessage());
             return false;
         } finally {
             $this->db->disconnect();
@@ -145,30 +139,33 @@ class PartnerModel {
     public function removeFavorite($member_id, $partner_id): array
     {
         $this->db->connect();
-
-        // First check if favorite exists
-        if (!$this->getFavoriteStatus($member_id, $partner_id)) {
-            $this->db->disconnect();
-            return [
-                'success' => false,
-                'message' => "Ce partenaire n'est pas dans HAHA vos favoris"
-            ];
-        }
-
-        $query = "DELETE FROM favorite_partners 
-              WHERE member_id = :member_id 
-              AND partner_id = :partner_id";
-
-        $params = [
-            ':member_id' => $member_id,
-            ':partner_id' => $partner_id
-        ];
-
         try {
-            $this->db->connect();
+            // Check if the favorite exists
+            $status = $this->db->query(
+                "SELECT COUNT(*) as is_favorite 
+             FROM favorite_partners 
+             WHERE member_id = :member_id 
+             AND partner_id = :partner_id",
+                [
+                    ':member_id' => $member_id,
+                    ':partner_id' => $partner_id
+                ]
+            );
+            if (empty($status) || $status[0]['is_favorite'] == 0) {
+                return [
+                    'success' => false,
+                    'message' => "Ce partenaire n'est pas dans vos favoris"
+                ];
+            }
+            // Delete the favorite
+            $query = "DELETE FROM favorite_partners 
+                  WHERE member_id = :member_id 
+                  AND partner_id = :partner_id";
+            $params = [
+                ':member_id' => $member_id,
+                ':partner_id' => $partner_id
+            ];
             $result = $this->db->execute($query, $params);
-            $this->db->disconnect();
-
             if ($result) {
                 return [
                     'success' => true,
@@ -181,11 +178,13 @@ class PartnerModel {
                 ];
             }
         } catch (\Exception $e) {
-            $this->db->disconnect();
+            error_log("Error in removeFavorite: " . $e->getMessage());
             return [
                 'success' => false,
                 'message' => 'Une erreur est survenue lors du retrait des favoris'
             ];
+        } finally {
+            $this->db->disconnect();
         }
     }
 

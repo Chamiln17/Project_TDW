@@ -12,6 +12,7 @@ require_once "./controllers/DonationController.php";
 require_once "./controllers/EventController.php";
 require_once "./controllers/AdminPartnerController.php";
 require_once "./controllers/AdminRemisePartenaireController.php";
+require_once "./controllers/MemberController.php";
 require_once __DIR__ . "/core/Application.php";
 
 $app = new Application();
@@ -51,11 +52,13 @@ $app->router->post("/admin/partners/remises/{id}/delete-discount/{discountId}", 
 $app->router->post("/admin/partners/remises/{id}/delete-advantage/{advantageId}", [\Controllers\AdminRemisePartenaireController::class, "deleteAdvantage"]);
 //routes for admin members
 
+// Afficher la liste des membres (GET)
 $app->router->get('/admin/members', [\Controllers\MemberController::class, 'displayMembers']);
-$app->router->get('/admin/members/{id}', [\Controllers\MemberController::class, 'displayMemberDetails']);
-$app->router->post('/admin/members/approve/{id}', [\Controllers\MemberController::class, 'updateMemberStatus']);
-$app->router->post('/admin/members/reject/{id}', [\Controllers\MemberController::class, 'updateMemberStatus']);
-$app->router->post('/admin/members/delete/{id}', [\Controllers\MemberController::class, 'deleteMember']);
+$app->router->get('/admin/members/{memberId}', [\Controllers\MemberController::class, 'displayMemberDetails']);
+$app->router->post('/admin/members/approve/{memberId}', [\Controllers\MemberController::class, 'approveMember']);
+$app->router->post('/admin/members/reject/{memberId}', [\Controllers\MemberController::class, 'rejectMember']);
+$app->router->post('/admin/members/toggle-block/{memberId}', [\Controllers\MemberController::class, 'toggleBlockStatus']);
+$app->router->post('/admin/members/delete/{memberId}', [\Controllers\MemberController::class, 'deleteMember']);
 
 $app->router->post("/admin/partners/create", [\Controllers\AdminPartnerController::class, "create"]);
 $app->router->post("/admin/partners/update/{id}", [\Controllers\AdminPartnerController::class, "update"]);

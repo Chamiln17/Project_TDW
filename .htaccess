@@ -1,5 +1,11 @@
 RewriteEngine On
 
+# Rediriger les requêtes pour les fichiers dans "uploads/id_documents/"
+# Rediriger les requêtes pour les fichiers dans "uploads/"
+RewriteRule ^admin/members/uploads/(.*)$ /Project_TDW/uploads/$1 [L]
+RewriteRule ^admin/partners/uploads/(.*)$ /Project_TDW/uploads/$1 [L]
+RewriteRule ^admin/donations/uploads/(.*)$ /Project_TDW/uploads/$1 [L]
+RewriteRule ^admin/events/uploads/(.*)$ /Project_TDW/uploads/$1 [L]
 # Redirect all requests to index.php
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d

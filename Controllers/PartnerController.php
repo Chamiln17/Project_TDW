@@ -31,24 +31,19 @@ class PartnerController {
     }
     public function handleFavorite($partner_id): void
     {
-        // Check if user is logged in
         if (!isset($_SESSION['user_id'])) {
             $_SESSION['error'] = "Please log in to register for events";
             header("Location: /Project_TDW/catalogue/$partner_id");
             exit();
         }
-
-        // Get member data and extract ID
         $memberData = $this->getMemberByID($_SESSION['user_id']);
         if (!$memberData || !isset($memberData[0]['member_id'])) {
             $_SESSION['error'] = "Invalid member account";
             header("Location: /Project_TDW/catalogue/$partner_id");
             exit();
         }
-
         $memberId = $memberData[0]['member_id'];
         $action = $_POST['action'] ?? 'register';
-
         try {
             if ($action === 'register') {
                 $result = $this->addFavorite($memberId, $partner_id);
@@ -66,21 +61,15 @@ class PartnerController {
                 }
             }
         } catch (\Exception $e) {
-            // Handle database errors
-            if ($e->getCode() == '23000') { // Foreign key constraint violation
+            if ($e->getCode() == '23000') {
                 $_SESSION['error'] = "Unable to register: Invalid member or partner";
             } else {
                 $_SESSION['error'] = "An error occurred while processing your request";
             }
-        } catch (\Exception $e) {
-            $_SESSION['error'] = "An unexpected error occurred";
         }
-
-        // Redirect back to event page
         header("Location: /Project_TDW/catalogue/$partner_id");
         exit();
     }
-
     public function getMemberByID($user_id) {
         return $this->model->getMember($user_id);
     }
