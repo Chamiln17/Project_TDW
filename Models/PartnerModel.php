@@ -1,6 +1,8 @@
 <?php
 namespace Models;
 use Database;
+use Exception;
+
 require_once "core/Database.php";
 
 class PartnerModel {
@@ -234,48 +236,259 @@ class PartnerModel {
 
     public function addPartner($data) {
         $this->db->connect();
-        $query = "
-            INSERT INTO partners (name, category_id, city, offer, logo) 
-            VALUES (?, ?, ?, ?, ?)
+        $this->db->beginTransaction();
+
+        try {
+            // Check if the email or username already exists
+            $checkQuery = "
+            SELECT user_id FROM users 
+            WHERE email = ? OR username = ?
         ";
-        $result = $this->db->execute($query, [
-            $data['name'],
-            $data['category_id'],
-            $data['city'],
-            $data['offer'],
-            $data['logo']
-        ]);
-        $this->db->disconnect();
-        return $result;
+            $checkResult = $this->db->query($checkQuery, [
+                $data['email'],
+                $data['username']
+            ]);
+
+            if ($checkResult) {
+                throw new Exception("Email or username already exists.");
+            }
+
+            // Insert the user
+            $userQuery = "
+            INSERT INTO users (username, password, role, email) 
+            VALUES (?, ?, 'partner', ?)
+        ";
+            $userResult = $this->db->execute($userQuery, [
+                $data['username'],
+                password_hash($data['password'], PASSWORD_DEFAULT), // Hash the password
+                $data['email']
+            ]);
+
+            if (!$userResult) {
+                throw new Exception("Failed to create user.");
+            }
+
+            // Get the last inserted user ID
+            $userId = $this->db->LastInsertId();
+
+            // Insert the partner
+            $partnerQuery = "
+            INSERT INTO partners (user_id, name, category_id, city, offer, logo) 
+            VALUES (?, ?, ?, ?, ?, ?)
+        ";
+            $partnerResult = $this->db->execute($partnerQuery, [
+                $userId,
+                $data['name'],
+                $data['category_id'],
+                $data['city'],
+                $data['offer'],
+                $data['logo']
+            ]);
+
+            if (!$partnerResult) {
+                throw new Exception("Failed to create partner.");
+            }
+
+            $this->db->commit();
+            return true;
+        } catch (Exception $e) {
+            $this->db->rollBack();
+            throw $e; // Re-throw the exception to handle it in the controller
+        } finally {
+            $this->db->disconnect();
+        }
     }
 
     public function updatePartner($id, $data) {
         $this->db->connect();
-        $query = "
+        $this->db->beginTransaction();
+
+        try {
+            // Debug: Log the partner_id
+            error_log("Partner ID: " . $id);
+
+            // Validate the partner_id
+            if (empty($id)) {
+                throw new Exception("Invalid partner_id.");
+            }
+
+            // Step 1: Delete dependent rows in the favorite_partners table
+            $deleteFavoritePartnersQuery = "DELETE FROM favorite_partners WHERE partner_id = ?";
+            $deleteFavoritePartnersResult = $this->db->execute($deleteFavoritePartnersQuery, [$id]);
+
+            // Debug: Log the favorite_partners delete result
+            error_log("Favorite Partners Delete Result: " . ($deleteFavoritePartnersResult ? "Success" : "Failure"));
+
+            if (!$deleteFavoritePartnersResult) {
+                throw new Exception("Failed to delete dependent rows in the favorite_partners table.");
+            }
+
+            // Step 2: Update the partner
+            $partnerQuery = "
             UPDATE partners 
             SET name = ?, category_id = ?, city = ?, offer = ?, logo = ?
             WHERE partner_id = ?
         ";
-        $result = $this->db->execute($query, [
-            $data['name'],
-            $data['category_id'],
-            $data['city'],
-            $data['offer'],
-            $data['logo'],
-            $id
-        ]);
-        $this->db->disconnect();
-        return $result;
-    }
+            $partnerParams = [
+                $data['name'],
+                $data['category_id'],
+                $data['city'],
+                $data['offer'],
+                $data['logo'],
+                $id
+            ];
 
+            // Debug: Log the partner query and parameters
+            error_log("Partner Query: " . $partnerQuery);
+            error_log("Partner Params: " . print_r($partnerParams, true));
+
+            $partnerResult = $this->db->execute($partnerQuery, $partnerParams);
+
+            // Debug: Log the partner update result
+            error_log("Partner Update Result: " . ($partnerResult ? "Success" : "Failure"));
+
+            if (!$partnerResult) {
+                throw new Exception("Failed to update partner.");
+            }
+
+            // Step 3: Update the associated user
+            $userQuery = "
+            UPDATE users 
+            SET username = ?, email = ?, password = ?
+            WHERE user_id = (SELECT user_id FROM partners WHERE partner_id = ?)
+        ";
+            $userParams = [
+                $data['username'],
+                $data['email'],
+                password_hash($data['password'], PASSWORD_DEFAULT), // Hash the password
+                $id
+            ];
+
+            // Debug: Log the user query and parameters
+            error_log("User Query: " . $userQuery);
+            error_log("User Params: " . print_r($userParams, true));
+
+            $userResult = $this->db->execute($userQuery, $userParams);
+
+            // Debug: Log the user update result
+            error_log("User Update Result: " . ($userResult ? "Success" : "Failure"));
+
+            if (!$userResult) {
+                throw new Exception("Failed to update user.");
+            }
+
+            // Commit the transaction
+            $this->db->commit();
+            return true;
+        } catch (Exception $e) {
+            // Rollback the transaction on error
+            $this->db->rollBack();
+            error_log($e->getMessage());
+            return false;
+        } finally {
+            // Disconnect from the database
+            $this->db->disconnect();
+        }
+    }
     public function deletePartner($id) {
         $this->db->connect();
-        $query = "DELETE FROM partners WHERE partner_id = ?";
-        $result = $this->db->execute($query, [$id]);
-        $this->db->disconnect();
-        return $result;
-    }
+        $this->db->beginTransaction();
 
+        try {
+            // Debug: Log the partner_id
+            error_log("Partner ID: " . $id);
+
+            // Validate the partner_id
+            if (empty($id)) {
+                throw new Exception("Invalid partner_id.");
+            }
+
+            // Step 1: Delete dependent rows in the advantages table
+            $deleteAdvantagesQuery = "DELETE FROM advantages WHERE partner_id = ?";
+            $deleteAdvantagesResult = $this->db->execute($deleteAdvantagesQuery, [$id]);
+
+            // Debug: Log the advantages delete result
+            error_log("Advantages Delete Result: " . ($deleteAdvantagesResult ? "Success" : "Failure"));
+
+            if (!$deleteAdvantagesResult) {
+                throw new Exception("Failed to delete dependent rows in the advantages table.");
+            }
+
+            // Step 1.5: Delete dependent rows in the discounts table
+            $deleteDiscountsQuery = "DELETE FROM discounts WHERE partner_id = ?";
+            $deleteDiscountsResult = $this->db->execute($deleteDiscountsQuery, [$id]);
+
+            // Debug: Log the discounts delete result
+            error_log("Discounts Delete Result: " . ($deleteDiscountsResult ? "Success" : "Failure"));
+
+            if (!$deleteDiscountsResult) {
+                throw new Exception("Failed to delete dependent rows in the discounts table.");
+            }
+
+            // Step 1.75: Delete dependent rows in the favorite_partners table
+            $deleteFavoritePartnersQuery = "DELETE FROM favorite_partners WHERE partner_id = ?";
+            $deleteFavoritePartnersResult = $this->db->execute($deleteFavoritePartnersQuery, [$id]);
+
+            // Debug: Log the favorite_partners delete result
+            error_log("Favorite Partners Delete Result: " . ($deleteFavoritePartnersResult ? "Success" : "Failure"));
+
+            if (!$deleteFavoritePartnersResult) {
+                throw new Exception("Failed to delete dependent rows in the favorite_partners table.");
+            }
+
+            // Step 2: Fetch the user_id associated with the partner
+            $userQuery = "SELECT user_id FROM partners WHERE partner_id = ?";
+            $userResult = $this->db->query($userQuery, [$id]);
+
+            // Debug: Log the user result
+            error_log("User Result: " . print_r($userResult, true));
+
+            // Check if the result is empty or invalid
+            if (empty($userResult)) {
+                throw new Exception("Failed to find associated user. No user found for partner_id: $id");
+            }
+
+            // Extract user_id from the first row of the result
+            $userId = $userResult[0]['user_id'];
+
+            // Debug: Log the user_id
+            error_log("User ID: " . $userId);
+
+            // Step 3: Delete the partner
+            $partnerQuery = "DELETE FROM partners WHERE partner_id = ?";
+            $partnerResult = $this->db->execute($partnerQuery, [$id]);
+
+            // Debug: Log the partner delete result
+            error_log("Partner Delete Result: " . ($partnerResult ? "Success" : "Failure"));
+
+            if (!$partnerResult) {
+                throw new Exception("Failed to delete partner.");
+            }
+
+            // Step 4: Delete the associated user
+            $deleteUserQuery = "DELETE FROM users WHERE user_id = ?";
+            $deleteUserResult = $this->db->execute($deleteUserQuery, [$userId]);
+
+            // Debug: Log the user delete result
+            error_log("User Delete Result: " . ($deleteUserResult ? "Success" : "Failure"));
+
+            if (!$deleteUserResult) {
+                throw new Exception("Failed to delete user.");
+            }
+
+            // Commit the transaction
+            $this->db->commit();
+            return true;
+        } catch (Exception $e) {
+            // Rollback the transaction on error
+            $this->db->rollBack();
+            error_log($e->getMessage());
+            return false;
+        } finally {
+            // Disconnect from the database
+            $this->db->disconnect();
+        }
+    }
     public function getPartnerStats() {
         $this->db->connect();
         $query = "
@@ -291,5 +504,27 @@ class PartnerModel {
         $this->db->disconnect();
         return $stats;
     }
+
+    public function getPartnerById($id) {
+        $this->db->connect();
+        $query = "SELECT * 
+                 FROM partners p 
+                 JOIN categories c ON p.category_id = c.category_id 
+                 JOIN users u ON p.user_id = u.user_id  
+                 WHERE p.partner_id = :id";
+        $result=$this->db->query($query, ['id' => $id]);
+        $this->db->disconnect();
+        return $result;
+    }
+
+    public function getCities()
+    {
+        $this->db->connect();
+        $query = "SELECT * FROM cities";
+        $cities = $this->db->query($query);
+        $this->db->disconnect();
+        return $cities;
+    }
+
 
 }

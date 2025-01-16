@@ -2,8 +2,18 @@
 
 class DiscountsView
 {
+    private $controller;
+
+    function __construct()
+    {
+        $this->controller=new \
+
+    }
+
     public function afficherDiscounts()
     {
+
+
         ?>
 <div class="bg-white rounded-lg shadow overflow-hidden">
     <table class="min-w-full divide-y divide-gray-200">

@@ -199,4 +199,5 @@ class MemberModel
         $this->db->disconnect();
         return $cities;
     }
+
 }

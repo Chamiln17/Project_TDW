@@ -1,11 +1,13 @@
 <?php
 
+use Controllers\AdminPartnerController;
+
 class AdminPartnerView {
     private $controller;
 
     function __construct() {
         if ($this->controller == null)
-            $this->controller = new \Controllers\AdminPartnerController();
+            $this->controller = new AdminPartnerController();
     }
 
     private function getUniqueCities($partners) {
@@ -31,257 +33,326 @@ class AdminPartnerView {
         return $categories;
     }
 
-    public function displayPartnerManagement($partners, $stats,$formData = null, $action = '') {
+    public function displayPartnerManagement($partners, $stats, $formData = null, $action = '') {
         $cities = $this->getUniqueCities($partners);
         $categories = $this->getCategories($partners);
+        $allCities = $this->controller->getCities();
 
         require_once "./views/includes/header.php";
         ?>
-    <main class="ml-64">
-
-    <div class="min-h-screen bg-gray-100 py-6">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <!-- Header -->
-                <div class="md:flex md:items-center md:justify-between">
-                    <div class="flex-1 min-w-0">
-                        <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
-                            Gestion des Partenaires
-                        </h2>
-                    </div>
-                    <div class="mt-4 flex md:mt-0 md:ml-4">
-                        <form method="POST" action="/admin/partners/new">
-                            <button type="submit" class="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+        <main class="ml-64">
+            <div class="min-h-screen bg-gray-100 py-6">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <!-- Header -->
+                    <div class="md:flex md:items-center md:justify-between">
+                        <div class="flex-1 min-w-0">
+                            <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
+                                Gestion des Partenaires
+                            </h2>
+                        </div>
+                        <div class="mt-4 flex md:mt-0 md:ml-4">
+                            <a href="/Project_TDW/admin/partners/new" class="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
                                 Ajouter un Partenaire
-                            </button>
-                        </form>
+                            </a>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Statistics -->
-                <div class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                    <?php foreach ($stats as $stat): ?>
-                        <div class="bg-white overflow-hidden shadow rounded-lg">
-                            <div class="p-5">
-                                <div class="flex items-center">
-                                    <div class="flex-shrink-0">
-                                        <div class="rounded-md bg-red-500 p-3">
-                                            <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
-                                            </svg>
+                    <!-- Statistics -->
+                    <div class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                        <?php foreach ($stats as $stat): ?>
+                            <div class="bg-white overflow-hidden shadow rounded-lg">
+                                <div class="p-5">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0">
+                                            <div class="rounded-md bg-red-500 p-3">
+                                                <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <div class="ml-5 w-0 flex-1">
+                                            <dl>
+                                                <dt class="text-sm font-medium text-gray-500 truncate">
+                                                    <?= htmlspecialchars($stat['category_name']) ?>
+                                                </dt>
+                                                <dd class="flex items-baseline">
+                                                    <div class="text-2xl font-semibold text-gray-900">
+                                                        <?= $stat['partner_count'] ?> partenaires
+                                                    </div>
+                                                    <div class="ml-2 text-sm text-gray-600">
+                                                        <?= number_format($stat['avg_discount'], 1) ?>% réduction moyenne
+                                                    </div>
+                                                </dd>
+                                            </dl>
                                         </div>
                                     </div>
-                                    <div class="ml-5 w-0 flex-1">
-                                        <dl>
-                                            <dt class="text-sm font-medium text-gray-500 truncate">
-                                                <?= htmlspecialchars($stat['category_name']) ?>
-                                            </dt>
-                                            <dd class="flex items-baseline">
-                                                <div class="text-2xl font-semibold text-gray-900">
-                                                    <?= $stat['partner_count'] ?> partenaires
-                                                </div>
-                                                <div class="ml-2 text-sm text-gray-600">
-                                                    <?= number_format($stat['avg_discount'], 1) ?>% réduction moyenne
-                                                </div>
-                                            </dd>
-                                        </dl>
-                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-
-                <!-- Filters -->
-                <div class="mt-8 bg-white shadow overflow-hidden sm:rounded-lg p-6">
-                    <form id="filterForm" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Ville</label>
-                            <select name="city" id="cityFilter" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm rounded-md">
-                                <option value="">Toutes les villes</option>
-                                <?php foreach ($cities as $city): ?>
-                                    <option value="<?= htmlspecialchars($city) ?>"><?= htmlspecialchars($city) ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Catégorie</label>
-                            <select name="category" id="categoryFilter" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm rounded-md">
-                                <option value="">Toutes les catégories</option>
-                                <?php foreach ($categories as $category): ?>
-                                    <option value="<?= $category['id'] ?>"><?= htmlspecialchars($category['name']) ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                    </form>
-                </div>
-
-                <!-- Partners Table -->
-                <div class="mt-8 flex flex-col">
-                    <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                        <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-                            <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-                                <table class="min-w-full divide-y divide-gray-200">
-                                    <thead class="bg-gray-50">
-                                    <tr>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Logo
-                                        </th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Nom
-                                        </th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Ville
-                                        </th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Catégorie
-                                        </th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Réduction
-                                        </th>
-                                        <th scope="col" class="relative px-6 py-3">
-                                            <span class="sr-only">Actions</span>
-                                        </th>
-                                    </tr>
-                                    </thead>
-                                    <tbody class="bg-white divide-y divide-gray-200" id="partnersTableBody">
-                                    <?php foreach ($partners as $partner): ?>
-                                        <tr class="partner-row"
-                                            data-city="<?= htmlspecialchars($partner['city']) ?>"
-                                            data-category-id="<?= htmlspecialchars($partner['category_id']) ?>"
-                                            data-category-name="<?= htmlspecialchars($partner['category_name']) ?>">
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <div class="flex-shrink-0 h-10 w-10">
-                                                    <img class="h-10 w-10 rounded-full object-cover"
-                                                         src="<?= htmlspecialchars($partner['logo']) ?>"
-                                                         alt="Logo">
-                                                </div>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <div class="text-sm font-medium text-gray-900">
-                                                    <?= htmlspecialchars($partner['name']) ?>
-                                                </div>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <div class="text-sm text-gray-900">
-                                                    <?= htmlspecialchars($partner['city']) ?>
-                                                </div>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                        <?= htmlspecialchars($partner['category_name']) ?>
-                    </span>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                <?= htmlspecialchars($partner['offer']) ?>%
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                                <form method="POST" action="/Project_TDW/admin/partners/edit/<?= $partner['partner_id'] ?>" class="inline">
-                                                    <button type="submit" class="text-indigo-600 hover:text-indigo-900">
-                                                        Modifier
-                                                    </button>
-                                                </form>
-                                                <form method="POST" action="/admin/partners/delete/<?= $partner['partner_id'] ?>" class="inline ml-4" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce partenaire?');">
-                                                    <button type="submit" class="text-red-600 hover:text-red-900">
-                                                        Supprimer
-                                                    </button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                    </tbody>
-                                </table>
-                                <div id="pagination" class="px-6 py-4 bg-white border-t border-gray-200">
-                                    <!-- Pagination will be inserted here by JavaScript -->
-                                </div>
-                            </div>
-                        </div>
+                        <?php endforeach; ?>
                     </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Partner Form Section -->
-        <?php if ($action === 'new' || $action === 'edit'): ?>
-            <div class="mt-8 bg-white shadow sm:rounded-lg">
-                <div class="px-4 py-5 sm:p-6">
-                    <h3 class="text-lg leading-6 font-medium text-gray-900">
-                        <?= $action === 'new' ? 'Ajouter un Partenaire' : 'Modifier le Partenaire' ?>
-                    </h3>
-                    <form method="POST" action="<?= $action === 'new' ? '/admin/partners/create' : '/admin/partners/update/'.$formData['partner_id'] ?>"
-                          class="mt-5 space-y-4" enctype="multipart/form-data">
-
-                        <?php if ($action === 'edit'): ?>
-                            <input type="hidden" name="partner_id" value="<?= htmlspecialchars($formData['partner_id']) ?>">
-                        <?php endif; ?>
-
-                        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                    <!-- Filters -->
+                    <div class="mt-8 bg-white shadow overflow-hidden sm:rounded-lg p-6">
+                        <form id="filterForm" class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
-                                <label for="name" class="block text-sm font-medium text-gray-700">Nom</label>
-                                <input type="text" name="name" id="name"
-                                       value="<?= $action === 'edit' ? htmlspecialchars($formData['name']) : '' ?>"
-                                       class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
-                                       required>
-                            </div>
-
-                            <div>
-                                <label for="city" class="block text-sm font-medium text-gray-700">Ville</label>
-                                <input type="text" name="city" id="city"
-                                       value="<?= $action === 'edit' ? htmlspecialchars($formData['city']) : '' ?>"
-                                       class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
-                                       required>
-                            </div>
-
-                            <div>
-                                <label for="category" class="block text-sm font-medium text-gray-700">Catégorie</label>
-                                <select name="category" id="category"
-                                        class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
-                                        required>
-                                    <?php foreach ($categories as $category): ?>
-                                        <option value="<?= $category['id'] ?>"
-                                            <?= ($action === 'edit' && $formData['category_id'] == $category['id']) ? 'selected' : '' ?>>
-                                            <?= htmlspecialchars($category['name']) ?>
-                                        </option>
+                                <label for="cityFilter" class="block text-sm font-medium text-gray-700">Ville</label>
+                                <select name="city" id="cityFilter" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm rounded-md">
+                                    <option value="">Toutes les villes</option>
+                                    <?php foreach ($cities as $city): ?>
+                                        <option value="<?= htmlspecialchars($city) ?>"><?= htmlspecialchars($city) ?></option>
                                     <?php endforeach; ?>
                                 </select>
                             </div>
-
                             <div>
-                                <label for="offer" class="block text-sm font-medium text-gray-700">Réduction (%)</label>
-                                <input type="number" name="offer" id="offer"
-                                       value="<?= $action === 'edit' ? htmlspecialchars($formData['offer']) : '' ?>"
-                                       class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
-                                       required>
+                                <label for="categoryFilter" class="block text-sm font-medium text-gray-700">Catégorie</label>
+                                <select  name="category" id="categoryFilter" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm rounded-md">
+                                    <option value="">Toutes les catégories</option>
+                                    <?php foreach ($categories as $category): ?>
+                                        <option value="<?= $category['id'] ?>"><?= htmlspecialchars($category['name']) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
                             </div>
+                        </form>
+                    </div>
+                    <!-- Adding error treatment  -->
+                    <?php if (isset($_SESSION['error'])): ?>
+                        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                            <span class="block sm:inline"><?= htmlspecialchars($_SESSION['error']) ?></span>
+                            <span class="absolute top-0 bottom-0 right-0 px-4 py-3" onclick="this.parentElement.style.display='none';">
+            <svg class="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                <title>Close</title>
+                <path d="M14.348 14.849a1 1 0 0 1-1.414 0L10 11.414l-2.93 2.93a1 1 0 1 1-1.414-1.414l2.93-2.93-2.93-2.93a1 1 0 1 1 1.414-1.414l2.93 2.93 2.93-2.93a1 1 0 1 1 1.414 1.414l-2.93 2.93 2.93 2.93a1 1 0 0 1 0 1.414z"/>
+            </svg>
+        </span>
+                        </div>
+                        <?php unset($_SESSION['error']); // Clear the error message after displaying it ?>
+                    <?php endif; ?>
 
-                            <div class="sm:col-span-2">
-                                <label for="logo" class="block text-sm font-medium text-gray-700">Logo</label>
-                                <?php if ($action === 'edit' && !empty($formData['logo'])): ?>
-                                    <div class="mt-2">
-                                        <img src="<?= htmlspecialchars($formData['logo']) ?>" alt="Current logo" class="h-20 w-20 object-cover rounded-full">
+                    <?php if (isset($_SESSION['success'])): ?>
+                        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+                            <span class="block sm:inline"><?= htmlspecialchars($_SESSION['success']) ?></span>
+                            <span class="absolute top-0 bottom-0 right-0 px-4 py-3" onclick="this.parentElement.style.display='none';">
+            <svg class="fill-current h-6 w-6 text-green-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                <title>Close</title>
+                <path d="M14.348 14.849a1 1 0 0 1-1.414 0L10 11.414l-2.93 2.93a1 1 0 1 1-1.414-1.414l2.93-2.93-2.93-2.93a1 1 0 1 1 1.414-1.414l2.93 2.93 2.93-2.93a1 1 0 1 1 1.414 1.414l-2.93 2.93 2.93 2.93a1 1 0 0 1 0 1.414z"/>
+            </svg>
+        </span>
+                        </div>
+                        <?php unset($_SESSION['success']); // Clear the success message after displaying it ?>
+                    <?php endif; ?>
+                    <!-- Partners Table -->
+                    <div class="mt-8 flex flex-col">
+                        <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                            <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+                                <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+                                    <table class="min-w-full divide-y divide-gray-200">
+                                        <thead class="bg-gray-50">
+                                        <tr>
+                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Logo
+                                            </th>
+                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Nom
+                                            </th>
+                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Ville
+                                            </th>
+                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Catégorie
+                                            </th>
+                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Réduction
+                                            </th>
+                                            <th scope="col" class="relative px-6 py-3">
+                                                <span class="sr-only">Actions</span>
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody class="bg-white divide-y divide-gray-200" id="partnersTableBody">
+                                        <?php foreach ($partners as $partner): ?>
+                                            <tr class="partner-row"
+                                                data-city="<?= htmlspecialchars($partner['city']) ?>"
+                                                data-category-id="<?= htmlspecialchars($partner['category_id']) ?>"
+                                                data-category-name="<?= htmlspecialchars($partner['category_name']) ?>">
+                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                    <div class="flex-shrink-0 h-10 w-10">
+                                                        <img class="h-10 w-10 rounded-full object-cover"
+                                                             src="../<?= htmlspecialchars($partner['logo']) ?>"
+                                                             alt="Logo">
+                                                    </div>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                    <div class="text-sm font-medium text-gray-900">
+                                                        <?= htmlspecialchars($partner['name']) ?>
+                                                    </div>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                    <div class="text-sm text-gray-900">
+                                                        <?= htmlspecialchars($partner['city']) ?>
+                                                    </div>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                                            <?= htmlspecialchars($partner['category_name']) ?>
+                                                        </span>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                    <?= htmlspecialchars($partner['offer']) ?>%
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                    <a href="/Project_TDW/admin/partners/remises/<?= $partner['partner_id'] ?>"
+                                                       class="text-yellow-600 hover:text-indigo-900 mr-4">Remises et Avantages</a>
+                                                    <a href="/Project_TDW/admin/partners/edit/<?= $partner['partner_id'] ?>"
+                                                       class="text-indigo-600 hover:text-indigo-900 mr-4">Modifier</a>
+                                                    <form method="POST" action="/Project_TDW/admin/partners/delete/<?= $partner['partner_id'] ?>" class="inline">
+                                                        <button type="submit" class="text-red-600 hover:text-red-900">
+                                                            Supprimer
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                    <div id="pagination" class="px-6 py-4 bg-white border-t border-gray-200">
+                                        <!-- Pagination will be inserted here by JavaScript -->
                                     </div>
-                                <?php endif; ?>
-                                <input type="file" name="logo" id="logo"
-                                       class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
-                                    <?= $action === 'new' ? 'required' : '' ?>>
+                                </div>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="mt-5 flex justify-end space-x-3">
-                            <a href="/admin/partners"
-                               class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
-                                Annuler
-                            </a>
-                            <button type="submit"
-                                    class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
-                                <?= $action === 'new' ? 'Ajouter' : 'Mettre à jour' ?>
-                            </button>
+                    <!-- Partner Form Section -->
+                    <?php if ($action === 'new' || $action === 'edit'): ?>
+                        <div class="mt-8 bg-white shadow sm:rounded-lg">
+                            <div class="px-4 py-5 sm:p-6">
+                                <h3 class="text-lg leading-6 font-medium text-gray-900">
+                                    <?= $action === 'new' ? 'Ajouter un Partenaire' : 'Modifier le Partenaire' ?>
+                                </h3>
+                                <form method="POST"
+                                      action="<?= $action === 'new' ? '/Project_TDW/admin/partners/create' : '/Project_TDW/admin/partners/update/'.$formData['partner_id'] ?>"
+                                      class="mt-5 space-y-4"
+                                      enctype="multipart/form-data">
+
+                                    <?php if ($action === 'edit'): ?>
+                                        <input type="hidden" name="partner_id" value="<?= htmlspecialchars($formData['partner_id']) ?>">
+                                    <?php endif; ?>
+
+                                    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                                        <!-- Email Field -->
+                                        <div>
+                                            <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                                            <input type="email" name="email" id="email"
+                                                   value="<?= $action === 'edit' ? htmlspecialchars($formData['email']) : '' ?>"
+                                                   class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
+                                                   required>
+                                        </div>
+
+                                        <!-- Username Field -->
+                                        <div>
+                                            <label for="username" class="block text-sm font-medium text-gray-700">Nom d'utilisateur</label>
+                                            <input type="text" name="username" id="username"
+                                                   value="<?= $action === 'edit' ? htmlspecialchars($formData['username']) : '' ?>"
+                                                   class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
+                                                   required>
+                                        </div>
+
+                                        <!-- Password Field -->
+                                        <div>
+                                            <label for="password" class="block text-sm font-medium text-gray-700">Mot de passe</label>
+                                            <input type="password" name="password" id="password"
+                                                   value="<?= $action === 'edit' ? htmlspecialchars($formData['password']) : ''?>"
+                                                   class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
+                                                   required>
+                                        </div>
+                                        <!-- Name Field -->
+                                        <div>
+                                            <label for="name" class="block text-sm font-medium text-gray-700">Nom</label>
+                                            <input type="text" name="name" id="name"
+                                                   value="<?= $action === 'edit' ? htmlspecialchars($formData['name']) : '' ?>"
+                                                   class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
+                                                   required>
+                                        </div>
+
+                                        <!-- City Field -->
+                                        <div>
+                                            <label for="city" class="block text-sm font-medium text-gray-700">Ville</label>
+                                            <select id="city" name="city" required
+                                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500">
+                                                <option value="">Sélectionnez votre ville</option>
+                                                <?php foreach ($allCities as $city): ?>
+                                                    <option value="<?php echo htmlspecialchars($city['city_name']); ?>"
+                                                        <?php if ($action === 'edit' && $formData['city'] === $city['city_name']): ?>
+                                                            selected
+                                                        <?php endif; ?>
+                                                    >
+                                                        <?php echo htmlspecialchars($city['city_name']); ?>
+                                                    </option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </div>
+
+                                        <!-- Category Field -->
+                                        <div>
+                                            <label for="category" class="block text-sm font-medium text-gray-700">Catégorie</label>
+                                            <select name="category" id="category"
+                                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
+                                                    required>
+                                                <?php foreach ($categories as $category): ?>
+                                                    <option value="<?= $category['id'] ?>"
+                                                        <?= ($action === 'edit' && $formData['category_id'] == $category['id']) ? 'selected' : '' ?>>
+                                                        <?= htmlspecialchars($category['name']) ?>
+                                                    </option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </div>
+
+                                        <!-- Offer Field -->
+                                        <div>
+                                            <label for="offer" class="block text-sm font-medium text-gray-700">Réduction (%)</label>
+                                            <input type="number" name="offer" id="offer"
+                                                   value="<?= $action === 'edit' ? htmlspecialchars($formData['offer']) : '' ?>"
+                                                   class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
+                                                   required>
+                                        </div>
+
+                                        <!-- Logo Field -->
+                                        <div class="sm:col-span-2">
+                                            <label for="logo" class="block text-sm font-medium text-gray-700">Logo</label>
+                                            <?php if ($action === 'edit' && !empty($formData['logo'])): ?>
+                                                <div class="mt-2">
+                                                    <img src="<?= htmlspecialchars($formData['logo']) ?>"
+                                                         alt="Current logo"
+                                                         class="h-20 w-20 object-cover rounded-full">
+                                                </div>
+                                            <?php endif; ?>
+                                            <input type="file" name="logo" id="logo"
+                                                   class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
+                                                <?= $action === 'new' ? 'required' : '' ?>>
+                                        </div>
+
+
+                                    </div>
+
+
+
+                                    <!-- Form Actions -->
+                                    <div class="mt-5 flex justify-end space-x-3">
+                                        <a href="/Project_TDW/admin/partners"
+                                           class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                                            Annuler
+                                        </a>
+                                        <button type="submit"
+                                                class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                                            <?= $action === 'new' ? 'Ajouter' : 'Mettre à jour' ?>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
-                    </form>
+                    <?php endif; ?>
                 </div>
             </div>
-        <?php endif; ?>
-        </div>
-        </div>
         </main>
 
 

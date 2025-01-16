@@ -29,7 +29,8 @@ class AdminPartnerController {
             exit();
         }
     }
-    public function displayPartners() {
+    public function displayPartners(): void
+    {
         if(session_status()){
 
         }
@@ -45,7 +46,8 @@ class AdminPartnerController {
         $this->view->displayPartnerManagement($partners, $stats);
     }
 
-    public function addPartner() {
+    public function addPartner(): void
+    {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = [
                 'name' => $_POST['name'],
@@ -64,7 +66,8 @@ class AdminPartnerController {
         }
     }
 
-    public function updatePartner($id) {
+    public function updatePartner($id): void
+    {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = [
                 'name' => $_POST['name'],
@@ -83,7 +86,8 @@ class AdminPartnerController {
         }
     }
 
-    public function deletePartner($id) {
+    public function deletePartner($id): void
+    {
         $result = $this->model->deletePartner($id);
         if ($result) {
             header('Location: /partners?success=deleted');
@@ -93,16 +97,20 @@ class AdminPartnerController {
     }
 
     private function handleLogoUpload() {
-        if (!isset($_FILES['logo'])) {
+        if (!isset($_FILES['logo']) || $_FILES['logo']['error'] === UPLOAD_ERR_NO_FILE) {
             return null;
         }
 
-        $targetDir = "uploads/logos/";
-        $fileName = uniqid() . "_" . basename($_FILES["logo"]["name"]);
-        $targetPath = $targetDir . $fileName;
+        $uploadDir = '/uploads/logos/';
+        if (!file_exists($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
+        }
 
-        if (move_uploaded_file($_FILES["logo"]["tmp_name"], $targetPath)) {
-            return $targetPath;
+        $fileName = uniqid() . '_' . basename($_FILES['logo']['name']);
+        $uploadFile = $uploadDir . $fileName;
+
+        if (move_uploaded_file($_FILES['logo']['tmp_name'], $uploadFile)) {
+            return $uploadFile;
         }
 
         return null;
@@ -111,5 +119,108 @@ class AdminPartnerController {
     public function getAllPartners(): void
     {
         $this->model->getAllPartners();
+    }
+    public function add() {
+        $this->view=new \AdminPartnerView();
+        $this->view->displayPartnerManagement(
+            $this->model->getAllPartners(),
+            $this->model->getPartnerStats(),
+            null,
+            'new'
+        );
+    }
+
+    public function edit($id) {
+        $partner = $this->model->getPartnerById($id);
+        if ($partner) {
+            $this->view=new \AdminPartnerView();
+            $this->view->displayPartnerManagement(
+                $this->model->getAllPartners(),
+                $this->model->getPartnerStats(),
+                $partner[0],
+                'edit'
+            );
+        } else {
+            header('Location: /Project_TDW/admin/partners');
+        }
+    }
+
+    public function create() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $logoPath = $this->handleLogoUpload();
+
+            $data = [
+                'email' => $_POST['email'],
+                'username' => $_POST['username'],
+                'password' => $_POST['password'],
+                'name' => $_POST['name'],
+                'category_id' => $_POST['category'],
+                'city' => $_POST['city'],
+                'offer' => $_POST['offer'],
+                'logo' => $logoPath
+            ];
+
+            try {
+                if ($this->model->addPartner($data)) {
+                    $_SESSION['success'] = "Partenaire ajouté avec succès.";
+                } else {
+                    $_SESSION['error'] = "Erreur lors de l'ajout du partenaire.";
+                }
+            } catch (Exception $e) {
+                $_SESSION['error'] = $e->getMessage(); // Set the error message from the exception
+            }
+
+            header('Location: /Project_TDW/admin/partners');
+            exit();
+        }
+    }
+
+    public function update($id) {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $logoPath = $this->handleLogoUpload();
+
+            $data = [
+                'email' => $_POST['email'],
+                'username' => $_POST['username'],
+                'password' => $_POST['password'],
+                'name' => $_POST['name'],
+                'category_id' => $_POST['category'],
+                'city' => $_POST['city'],
+                'offer' => $_POST['offer'],
+                'logo' => $logoPath
+            ];
+
+            try {
+                if ($this->model->updatePartner($id, $data)) {
+                    $_SESSION['success'] = "Partenaire mis à jour avec succès.";
+                } else {
+                    $_SESSION['error'] = "Erreur lors de la mise à jour du partenaire.";
+                }
+            } catch (\Exception $e) {
+                $_SESSION['error'] = $e->getMessage(); // Set the error message from the exception
+
+            }
+
+            header('Location: /Project_TDW/admin/partners');
+            exit();
+        }
+    }
+
+    public function delete($id) {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if ($this->model->deletePartner($id)) {
+                $_SESSION['success'] = "Partenaire supprimé avec succès";
+            } else {
+                $_SESSION['error'] = "Erreur lors de la suppression du partenaire. Veuillez vérifier les logs pour plus de détails.";
+            }
+
+            header('Location: /Project_TDW/admin/partners');
+            exit();
+        }
+    }
+
+    public function getCities()
+    {
+       return $this->model->getCities();
     }
 }

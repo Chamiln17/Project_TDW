@@ -56,14 +56,11 @@ function afficherNavbar($userRole) {
     if ($userRole === 'admin') {
         echo '<aside class="w-64 bg-[#2D3339] text-white fixed h-full">
             <div class="p-4">
-                <div class="flex items-center gap-2 mb-8">
+                <div class="flex items-center gap-2 pb-24">
                     <img src="../assets/shapes/logo.svg" alt="Logo" class="w-full h-8">
                 </div>
                 
-                <!-- Profile Section -->
-                <div class="mb-24 text-center">
-                    <img src="/placeholder.svg" alt="Profile" class="rounded-full w-full h-full object-cover">
-                </div>
+               
 
                 <!-- Navigation -->
                 <nav class="space-y-2">';
