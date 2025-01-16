@@ -22,6 +22,14 @@ function afficherNavbar($userRole) {
             '/Project_TDW/admin/events' => 'Evenements',
 
         ],
+        'partner'=>[
+            '/Project_TDW/Dashboard' => 'Dashboard',
+            '/Project_TDW' => 'A Propos',
+            '/Project_TDW/events' => 'Evenements',
+            '/Project_TDW/news' => 'News',
+            "/Project_TDW/donation"=> "Donation",
+            '/Project_TDW/discounts_and_advantages' => 'Remises et Avantages'
+        ],
         'member' => [
             '/Project_TDW/Dashboard' => 'Dashboard',
             '/Project_TDW' => 'A Propos',
@@ -176,7 +184,7 @@ function afficherNavbar($userRole) {
                         <!-- Authentication Buttons (Desktop) -->
                         <div class="hidden md:flex md:items-center md:space-x-4">';
 
-        if ($userRole === 'member') {
+        if ($userRole === 'member' || $userRole === 'partner' ) {
             echo '<a href="/Project_TDW/profile" class="bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-md">My Profile</a>
                   <form action="/Project_TDW/logout" method="POST">
                       <button type="submit" class="bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 rounded-md">Logout</button>
@@ -213,7 +221,7 @@ function afficherNavbar($userRole) {
                     <!-- Authentication Buttons (Mobile) -->
                     <div class="pt-4 pb-3 border-t border-gray-200">';
 
-        if ($userRole === 'member' || $userRole === 'admin') {
+        if ($userRole === 'member' || $userRole === 'admin' || $userRole === 'partner') {
             echo '<div class="space-y-1">
                     <a href="/Project_TDW/profile" class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">
                         ' . ($userRole === 'admin' ? 'Dashboard' : 'My Profile') . '

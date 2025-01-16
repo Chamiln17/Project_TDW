@@ -22,8 +22,10 @@ class ProfileView {
 
         <div class="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
             <div class="max-w-3xl mx-auto">
+                <a href="/Project_TDW/catalogue?favorites=1" class="bg-brand-red text-white px-4 py-2 mb-24 rounded-md">Afficher les partenaires favoris</a>
+                <a href="http://localhost/Project_TDW/donation/history" class="bg-brand-red text-white px-4 py-2 mb-24 rounded-md">Historique des dons</a>
                 <!-- Member Information Card -->
-                <div class="bg-white rounded-lg shadow-md overflow-hidden mb-8">
+                <div class="bg-white rounded-lg shadow-md overflow-hidden my-8">
                     <div class="md:flex">
                         <div class="md:flex-shrink-0">
                             <img class="h-48 w-full object-cover md:w-48"

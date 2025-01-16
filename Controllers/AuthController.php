@@ -57,8 +57,9 @@ class AuthController
         if ($user) {
             // Fetch member data
             $member = $this->data->getMemberByUserId($user['user_id']);
-            if (!$member) {
-                $_SESSION['login_error'] = "Member data not found.";
+            $partner= $this->data->getPartnerById($user['user_id']);
+            if (!$member && !$partner) {
+                $_SESSION['login_error'] = "data not found.";
                 header("Location: login");
                 exit();
             }
@@ -67,7 +68,7 @@ class AuthController
                 header("Location: login");
                 exit();
             }
-            if (!$member['is_validated']) {
+            if (!$member['is_validated'] && !$partner) {
                 $_SESSION['login_error'] = "Your account is pending validation.";
                 header("Location: login");
                 exit();
@@ -79,11 +80,8 @@ class AuthController
             $_SESSION['email'] = $user['email'];
             // Redirect to a protected page based on role
             switch ($user['role']) {
-                case 'admin':
-                    header("Location: admin_dashboard.php");
-                    break;
                 case 'partner':
-                    header("Location: partner_dashboard.php");
+                    header("Location: /Project_TDW/");
                     break;
                 default:
                     header("Location: /Project_TDW/");

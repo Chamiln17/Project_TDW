@@ -27,4 +27,13 @@ class CatalogueController
         $view = new \CatalogueView();
         $view->afficherCatalogue();
     }
+    public function getFavoritePartners($memberId): array
+    {
+        return $this->home->get_favorite_partners($memberId);
+    }
+
+    public function getMemberID($user_id)
+    {
+        return $this->home->getMemberID($user_id);
+    }
 }

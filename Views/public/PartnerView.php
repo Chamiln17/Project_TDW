@@ -20,7 +20,6 @@ class PartnerView {
         if (isset($_SESSION['user_id'])) {
             $isFavorite = $this->controller->getFavoriteStatus($_SESSION['user_id'], $partner["partner_id"]);
         }
-        var_dump($isFavorite);
         ?>
 
         <div class="min-h-screen bg-gray-50">
@@ -29,7 +28,7 @@ class PartnerView {
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                     <div class="flex flex-col md:flex-row items-center gap-8">
                         <div class="md:w-1/3">
-                            <img src="<?= htmlspecialchars($partner['logo']) ?>"
+                            <img src="/Project_TDW/<?= htmlspecialchars($partner['logo']) ?>"
                                  alt="<?= htmlspecialchars($partner['name']) ?>"
                                  class="w-full h-48 object-contain">
                         </div>

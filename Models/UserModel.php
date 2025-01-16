@@ -278,4 +278,36 @@ class UserModel
         $this->db->disconnect();
         return $cities;
     }
+
+    public function getPartnerById($user_id)
+    {
+        $this->db->connect();
+
+        // Query to fetch partner details by user_id
+        $query = "
+        SELECT 
+            P.partner_id,
+            P.name,
+            P.city,
+            C.category_name AS category,
+            P.offer,
+            P.logo
+        FROM 
+            partners P
+        JOIN 
+            categories C ON P.category_id = C.category_id
+        WHERE 
+            P.user_id = :user_id
+    ";
+
+        $params = [':user_id' => $user_id];
+
+        // Execute the query
+        $partner = $this->db->query($query, $params);
+
+        $this->db->disconnect();
+
+        // Return the first row if found, otherwise return null
+        return $partner ? $partner[0] : null;
+    }
 }

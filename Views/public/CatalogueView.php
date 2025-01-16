@@ -42,7 +42,12 @@ class CatalogueView {
     function afficherCatalogue(): void
     {
         require_once "./views/includes/header.php";
-        $partners = $this->controller->getPartners();
+         $user_id= $_SESSION['user_id'] ?? null;
+        $memberId=$this->controller->getMemberID($user_id);
+        // Récupérer les partenaires favoris si le bouton est cliqué
+        $partners = isset($_GET['favorites']) && $memberId
+            ? $this->controller->getFavoritePartners($memberId)
+            : $this->controller->getPartners();
         $cities = $this->getUniqueCities($partners);
         $categories = $this->getUniqueCategories($partners);
         $groupedPartners = $this->groupPartnersByCategory($partners);
@@ -50,7 +55,12 @@ class CatalogueView {
 
         <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <h1 class="text-3xl font-bold text-nav-gray mb-8">Catalogue des Partenaires</h1>
-
+            <!-- Bouton pour afficher les favoris -->
+            <?php if (isset($_SESSION['user_id'])): ?>
+            <div class="mb-8">
+                <a href="?favorites=1" class="bg-brand-red text-white px-4 py-2 rounded-md">Afficher les partenaires favoris</a>
+            </div>
+            <?php endif; ?>
             <!-- Filters -->
             <div class="bg-white p-6 rounded-lg shadow-sm mb-8">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
