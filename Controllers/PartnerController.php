@@ -10,7 +10,7 @@ class PartnerController {
 
     public function display($partnerId): void
     {
-        $view = new \AdminPartnerView();
+        $view = new \PartnerView();
         $view->afficherPartner($partnerId);
     }
 

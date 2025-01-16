@@ -37,7 +37,9 @@ class AdminPartnerView {
 
         require_once "./views/includes/header.php";
         ?>
-        <div class="min-h-screen bg-gray-100 py-6">
+    <main class="ml-64">
+
+    <div class="min-h-screen bg-gray-100 py-6">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <!-- Header -->
                 <div class="md:flex md:items-center md:justify-between">
@@ -280,6 +282,7 @@ class AdminPartnerView {
         <?php endif; ?>
         </div>
         </div>
+        </main>
 
 
         <script>

@@ -74,6 +74,7 @@ class PartnerModel {
             $member_id = $member[0]['member_id'];
 
             // Check favorite status
+            $this->db->connect();
             $status = $this->db->query(
                 "SELECT COUNT(*) as is_favorite 
              FROM favorite_partners 

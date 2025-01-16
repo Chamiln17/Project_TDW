@@ -16,13 +16,11 @@ function afficherNavbar($userRole) {
     // Define navigation items for each user role
     $nav_items = [
         'admin' => [
-            '/Project_TDW' => 'A Propos',
-            '/Project_TDW/events' => 'Evenements',
-            '/Project_TDW/news' => 'News',
-            '/Project_TDW/catalogue' => 'Partenaires',
-            '/Project_TDW/contact' => 'Contactez nous',
-            '/admin/dashboard' => 'Dashboard',
-            '/admin/members' => 'Members'
+            '/Project_TDW/admin/partners' => 'Partenaires',
+            '/Project_TDW/admin/members' => 'Members',
+            '/Project_TDW/admin/discounts' => 'Remises',
+            '/Project_TDW/admin/events' => 'Evenements',
+
         ],
         'member' => [
             '/Project_TDW/Dashboard' => 'Dashboard',
@@ -54,161 +52,61 @@ function afficherNavbar($userRole) {
     // Select appropriate navigation items based on user role
     $current_nav_items = $nav_items[$userRole] ?? $nav_items['public'];
 
-    // Generate the navbar with responsive design
-    echo '<nav class="bg-white shadow">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between h-16">
-                    <!-- Logo and Mobile Menu Button -->
-                    <div class="flex items-center md:hidden">
-                        <button type="button" class="mobile-menu-button inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-red-500" aria-controls="mobile-menu" aria-expanded="false">
-                            <span class="sr-only">Open main menu</span>
-                            <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                            </svg>
-                        </button>
-                    </div>
-
-                    <!-- Desktop Navigation -->
-                    <div class="hidden md:flex md:items-center md:space-x-6">';
-
-    foreach ($current_nav_items as $path => $label) {
-        $is_active = $current_page === $path;
-
-        if (!$is_active && $path !== '/Project_TDW') {
-            $is_active = strpos($current_page, $path) === 0;
-        }
-
-        $class = $is_active
-            ? "inline-flex items-center px-1 pt-1 border-b-2 border-red-500 text-sm font-medium text-gray-900"
-            : "inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300";
-
-        echo '<a href="' . $path . '" class="' . $class . '">' . $label . '</a>';
-    }
-
-    echo '</div>
-
-                    <!-- Authentication Buttons (Desktop) -->
-                    <div class="hidden md:flex md:items-center md:space-x-4">';
-
-    if ($userRole === 'member') {
-        echo '<a href="/Project_TDW/profile" class="bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-md">My Profile</a>
-              <form action="/Project_TDW/logout" method="POST">
-                  <button type="submit" class="bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 rounded-md">Logout</button>
-              </form>';
-    } elseif ($userRole === 'admin') {
-        echo '<a href="/Project_TDW/profile" class="bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-md">Dashboard</a>
-              <form action="/Project_TDW/logout" method="POST">
-                  <button type="submit" class="bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 rounded-md">Logout</button>
-              </form>';
-    } else {
-        echo '<a href="/Project_TDW/login" class="bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-md">Login</a>
-              <a href="/Project_TDW/register" class="bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 rounded-md">Rejoignez Nous</a>';
-    }
-
-    echo '</div>
+    // If the user is an admin, render the sidebar
+    if ($userRole === 'admin') {
+        echo '<aside class="w-64 bg-[#2D3339] text-white fixed h-full">
+            <div class="p-4">
+                <div class="flex items-center gap-2 mb-8">
+                    <img src="../assets/shapes/logo.svg" alt="Logo" class="w-full h-8">
                 </div>
-            </div>
+                
+                <!-- Profile Section -->
+                <div class="mb-24 text-center">
+                    <img src="/placeholder.svg" alt="Profile" class="rounded-full w-full h-full object-cover">
+                </div>
 
-            <!-- Mobile Navigation Menu -->
-            <div class="md:hidden hidden" id="mobile-menu">
-                <div class="pt-2 pb-3 space-y-1">';
+                <!-- Navigation -->
+                <nav class="space-y-2">';
 
-    foreach ($current_nav_items as $path => $label) {
-        $is_active = $current_page === $path;
+        foreach ($current_nav_items as $path => $label) {
+            $is_active = $current_page === $path;
 
-        if (!$is_active && $path !== '/Project_TDW') {
-            $is_active = strpos($current_page, $path) === 0;
+            if (!$is_active && $path !== '/Project_TDW') {
+                $is_active = strpos($current_page, $path) === 0;
+            }
+
+            $class = $is_active
+                ? "flex items-center gap-3 px-4 py-3 bg-gray-700 text-white rounded"
+                : "flex items-center gap-3 px-4 py-3 text-gray-300 hover:bg-gray-700 rounded";
+
+            echo '<a href="' . $path . '" class="' . $class . '">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+                ' . $label . '
+              </a>';
         }
 
-        $class = $is_active
-            ? "bg-red-50 border-l-4 border-red-500 text-red-700 block pl-3 pr-4 py-2 text-base font-medium"
-            : "border-l-4 border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 text-base font-medium";
-
-        echo '<a href="' . $path . '" class="' . $class . '">' . $label . '</a>';
-    }
-
-    echo '</div>
-                <!-- Authentication Buttons (Mobile) -->
-                <div class="pt-4 pb-3 border-t border-gray-200">';
-
-    if ($userRole === 'member' || $userRole === 'admin') {
-        echo '<div class="space-y-1">
-                <a href="/Project_TDW/profile" class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">
-                    ' . ($userRole === 'admin' ? 'Dashboard' : 'My Profile') . '
-                </a>
-                <form action="/Project_TDW/logout" method="POST">
-                    <button type="submit" class="block w-full text-left px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">
-                        Logout
-                    </button>
-                </form>
-              </div>';
-    } else {
-        echo '<div class="space-y-1">
-                <a href="/Project_TDW/login" class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">
-                    Login
-                </a>
-                <a href="/Project_TDW/register" class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">
-                    Rejoignez Nous
-                </a>
-              </div>';
-    }
-
-    echo '</div>
-            </div>
-        </nav>';
-
-    // Add JavaScript for mobile menu toggle
-    echo '<script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const mobileMenuButton = document.querySelector(".mobile-menu-button");
-            const mobileMenu = document.getElementById("mobile-menu");
+        // Add Dashboard and Logout buttons within the sidebar
+        echo '<div class="pt-24">
             
-            mobileMenuButton.addEventListener("click", function() {
-                mobileMenu.classList.toggle("hidden");
-                
-                // Update aria-expanded
-                const isExpanded = mobileMenu.classList.contains("hidden") ? "false" : "true";
-                mobileMenuButton.setAttribute("aria-expanded", isExpanded);
-            });
-        });
-    </script>';
-}
-?>
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <title>Header</title>
-        <script src="https://cdn.tailwindcss.com"></script>
-        <script>
-            tailwind.config = {
-                theme: {
-                    extend: {
-                        colors: {
-                            'nav-gray': '#2D3339',
-                            'brand-red': '#FF0000',
-                        }
-                    }
-                }
-            }
-        </script>
-        <link rel="stylesheet" href="/assets/">
-        <style>
-            .slide {
-                opacity: 0;
-                transition: opacity 0.5s ease-in-out;
-                display: none;
-            }
-            .slide.active {
-                opacity: 1;
-                display: block;
-            }
-            .benefits-table tr:nth-child(even) {
-                background-color: rgba(0, 0, 0, 0.02);
-            }
-        </style>
-    </head>
-<body>
-    <header class="bg-gray-800 text-white py-4">
+            <form action="/Project_TDW/logout" method="POST" class="w-full">
+                <button type="submit" class="flex items-center gap-3 px-4 py-3 text-gray-300 hover:bg-gray-700 rounded w-full text-left">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                    </svg>
+                    Logout
+                </button>
+            </form>
+          </div>';
+
+        echo '</nav>
+          </div>
+        </aside>';
+    } else {
+        // Render the header only for non-admin users
+        echo '
+<header class="bg-gray-800 text-white py-4">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center">
                 <!-- Logo -->
@@ -242,5 +140,167 @@ function afficherNavbar($userRole) {
                 </div>
             </div>
         </div>
-    </header>
+    </header>';
+
+        // Generate the regular navbar for non-admin users
+        echo '
+<nav class="bg-white shadow">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex justify-between h-16">
+                        <!-- Logo and Mobile Menu Button -->
+                        <div class="flex items-center md:hidden">
+                            <button type="button" class="mobile-menu-button inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-red-500" aria-controls="mobile-menu" aria-expanded="false">
+                                <span class="sr-only">Open main menu</span>
+                                <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- Desktop Navigation -->
+                        <div class="hidden md:flex md:items-center md:space-x-6">';
+
+        foreach ($current_nav_items as $path => $label) {
+            $is_active = $current_page === $path;
+
+            if (!$is_active && $path !== '/Project_TDW') {
+                $is_active = strpos($current_page, $path) === 0;
+            }
+
+            $class = $is_active
+                ? "inline-flex items-center px-1 pt-1 border-b-2 border-red-500 text-sm font-medium text-gray-900"
+                : "inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300";
+
+            echo '<a href="' . $path . '" class="' . $class . '">' . $label . '</a>';
+        }
+
+        echo '</div>
+
+                        <!-- Authentication Buttons (Desktop) -->
+                        <div class="hidden md:flex md:items-center md:space-x-4">';
+
+        if ($userRole === 'member') {
+            echo '<a href="/Project_TDW/profile" class="bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-md">My Profile</a>
+                  <form action="/Project_TDW/logout" method="POST">
+                      <button type="submit" class="bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 rounded-md">Logout</button>
+                  </form>';
+        }
+         else {
+            echo '<a href="/Project_TDW/login" class="bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-md">Login</a>
+                  <a href="/Project_TDW/register" class="bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 rounded-md">Rejoignez Nous</a>';
+        }
+
+        echo '</div>
+                    </div>
+                </div>
+
+                <!-- Mobile Navigation Menu -->
+                <div class="md:hidden hidden" id="mobile-menu">
+                    <div class="pt-2 pb-3 space-y-1">';
+
+        foreach ($current_nav_items as $path => $label) {
+            $is_active = $current_page === $path;
+
+            if (!$is_active && $path !== '/Project_TDW') {
+                $is_active = strpos($current_page, $path) === 0;
+            }
+
+            $class = $is_active
+                ? "bg-red-50 border-l-4 border-red-500 text-red-700 block pl-3 pr-4 py-2 text-base font-medium"
+                : "border-l-4 border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 text-base font-medium";
+
+            echo '<a href="' . $path . '" class="' . $class . '">' . $label . '</a>';
+        }
+
+        echo '</div>
+                    <!-- Authentication Buttons (Mobile) -->
+                    <div class="pt-4 pb-3 border-t border-gray-200">';
+
+        if ($userRole === 'member' || $userRole === 'admin') {
+            echo '<div class="space-y-1">
+                    <a href="/Project_TDW/profile" class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">
+                        ' . ($userRole === 'admin' ? 'Dashboard' : 'My Profile') . '
+                    </a>
+                    <form action="/Project_TDW/logout" method="POST">
+                        <button type="submit" class="block w-full text-left px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">
+                            Logout
+                        </button>
+                    </form>
+                  </div>';
+        } else {
+            echo '<div class="space-y-1">
+                    <a href="/Project_TDW/login" class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">
+                        Login
+                    </a>
+                    <a href="/Project_TDW/register" class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">
+                        Rejoignez Nous
+                    </a>
+                  </div>';
+        }
+
+        echo '</div>
+                </div>
+            </nav>';
+    }
+
+    // Add JavaScript for mobile menu toggle
+    echo '<script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const mobileMenuButton = document.querySelector(".mobile-menu-button");
+            const mobileMenu = document.getElementById("mobile-menu");
+            
+            mobileMenuButton.addEventListener("click", function() {
+                mobileMenu.classList.toggle("hidden");
+                
+                // Update aria-expanded
+                const isExpanded = mobileMenu.classList.contains("hidden") ? "false" : "true";
+                mobileMenuButton.setAttribute("aria-expanded", isExpanded);
+            });
+        });
+    </script>';
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Header</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'nav-gray': '#2D3339',
+                        'brand-red': '#FF0000',
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="/assets/">
+    <style>
+        .slide {
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            display: none;
+        }
+        .slide.active {
+            opacity: 1;
+            display: block;
+        }
+        .benefits-table tr:nth-child(even) {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+    </style>
+</head>
+<body>
+
 <?php afficherNavbar($userRole); ?>
+
+<!-- Main Content -->
+<main class="<?php echo $userRole === 'admin' ? 'ml-64' : ''; ?>">
+
+</main>
+
+</body>
+</html>

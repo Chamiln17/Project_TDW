@@ -3,12 +3,14 @@
 namespace Controllers;
 
 use JetBrains\PhpStorm\NoReturn;
+use LoginAdminView;
 use LoginView;
 use Models\UserModel;
 use RegisterView;
-
 require_once "views/public/LoginView.php";
 require_once "views/public/RegisterView.php";
+require_once "Views/admin/LoginAdminView.php";
+
 require_once "models/UserModel.php";
 
 class AuthController
@@ -31,6 +33,12 @@ class AuthController
     {
         $this->view = new RegisterView();
         $this->view->afficherRegister();
+    }
+    public function display_login_admin()
+    {
+        $this->view=new LoginAdminView();
+        $this->view->afficherLogin();
+
     }
 
     public function login()
@@ -86,6 +94,44 @@ class AuthController
             $_SESSION['login_error'] = "Invalid username/email or password.";
             // Redirect back to login page
             header("Location: login");
+        }
+        exit();
+    }
+    public function loginAdmin()
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header("Location: login");
+            exit();
+        }
+        // Get form input
+        $input = $_POST['input'];
+        $password = $_POST['password'];
+        $user = $this->data->login($input, $password);
+        if ($user) {
+            if ($user['role']==="admin") {
+                // Set session variables
+                $_SESSION['user_id'] = $user['user_id'];
+                $_SESSION['username'] = $user['username'];
+                $_SESSION['role'] = $user['role'];
+                $_SESSION['email'] = $user['email'];
+                    header("Location: /Project_TDW/admin/partners");
+                    exit();
+            }
+            else{
+                // Redirect to a protected page based on role
+                $_SESSION['login_error'] = "You are not an admin";
+                header("Location: /Project_TDW/admin/login");
+                exit();
+
+            }
+        } else {
+            // Set error message for login failure
+            $_SESSION['login_error'] = "Error while login";
+            // Redirect back to login page
+            header("Location: /Project_TDW/login");
         }
         exit();
     }

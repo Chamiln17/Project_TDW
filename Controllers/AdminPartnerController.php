@@ -12,9 +12,27 @@ class AdminPartnerController {
 
     public function __construct() {
         $this->model = new PartnerModel();
+        $this->checkAdminAuthorization();
     }
+    private function checkAdminAuthorization(): void {
 
+        // Check if user is logged in and has admin role
+        if (!isset($_SESSION['user_id']) ||
+            !isset($_SESSION['role']) ||
+            $_SESSION['role'] !== 'admin') {
+
+            // Store intended destination for redirect after login
+            $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
+
+            // Redirect to login page with error message
+            header('Location: /Project_TDW/login' . urlencode($_SERVER['REQUEST_URI']));
+            exit();
+        }
+    }
     public function displayPartners() {
+        if(session_status()){
+
+        }
         $filters = [
             'city' => $_GET['city'] ?? null,
             'category' => $_GET['category'] ?? null,

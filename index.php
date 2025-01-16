@@ -20,6 +20,8 @@ $app->router->get("/404_Error", function() {
 $app->router->get('/',[\Controllers\HomeController::class ,'display'] );
 $app->router->get('/home',[\Controllers\HomeController::class ,'display'] );
 $app->router->get('/login',[\Controllers\AuthController::class ,'display_Login'] );
+$app->router->get("/admin/login",[\Controllers\AuthController::class,"display_login_admin"]);
+
 $app->router->get('/register',[\Controllers\AuthController::class ,'display_Register'] );
 $app->router->get('/catalogue',[\Controllers\CatalogueController::class ,'display'] );
 $app->router->get('/catalogue/{partnerId}',[\Controllers\PartnerController::class ,'display'] );
@@ -33,6 +35,7 @@ $app->router->get("/events/{event_id}",[\Controllers\EventController::class, 'di
 $app->router->get("/events",[\Controllers\EventController::class, 'displayEvents']);
 
 $app->router->post('/login',[\Controllers\AuthController::class ,'login'] );
+$app->router->post("/admin/login",[\Controllers\AuthController::class,"loginAdmin"]);
 $app->router->post('/register',[\Controllers\AuthController::class ,'register'] );
 $app->router->post('/logout',[\Controllers\AuthController::class ,'logout'] );
 $app->router->post('/profile/update',[\Controllers\ProfileController::class ,'update_member'] );
