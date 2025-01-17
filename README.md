@@ -1,4 +1,5 @@
 # Project_TDW
+This project was developed using PHP,Tailwind,JS and HTML5 and run under XAMPP 
 # Project MVC Architecture
 
 This project follows the Model-View-Controller (MVC) architectural pattern, which separates the application into three main components: Models, Views, and Controllers. This separation helps in organizing the code, making it more maintainable and scalable.
@@ -106,5 +107,3 @@ $app->router->get('/catalogue', [\Controllers\CatalogueController::class, 'displ
 The Database class in ``core/Database.php`` manages the connection to the MySQL database using PDO. It provides methods to ``connect``, ``disconnect``, ``execute queries``, and ``fetch results``.  
 ## Session Management
 The ``Application`` class initializes the session with secure cookie parameters to ensure the session is properly managed and secure.  
-## Conclusion
-This MVC architecture helps in organizing the codebase, making it easier to manage and scale. Each component has a specific responsibility, promoting separation of concerns and improving maintainability.
